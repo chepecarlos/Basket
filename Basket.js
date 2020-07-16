@@ -2,8 +2,6 @@ let yaml = require('js-yaml');
 let fs = require('fs');
 let fsExtra = require('fs-extra');
 
-console.log("Opcion: " + process.argv[2]);
-
 function ObtenerTitulo(Data) {
   let Titulo = Data.title;
   let Indice = Data.video_numero;
@@ -46,10 +44,33 @@ function CrearArchivoNP(Data, Titulo, Direcion) {
 }
 
 function main() {
-  let Data = CargarData('Guion');
-  let Titulo = ObtenerTitulo(Data);
-  CrearFolder(Titulo);
-  CrearArchivoNP(Data, Titulo, 'Guion');
+  console.log("Opcion: " + process.argv[2]);
+  //
+  //
+  switch (process.argv[2]) {
+    case '-d':
+      if (process.argv[3] != null) {
+        CrearFolder(process.argv[3]);
+      } else {
+        CrearFolder("000_Nombre_Video");
+      }
+      break;
+    case '-np':
+      if (process.argv[3] != null) {
+        let Data = CargarData(process.argv[3]);
+        let Titulo = ObtenerTitulo(Data);
+        CrearArchivoNP(Data, Titulo, process.argv[3]);
+      } else {
+        let Data = CargarData(".");
+        let Titulo = ObtenerTitulo(Data);
+        CrearArchivoNP(Data, Titulo, ".");
+      }
+      break;
+    default:
+      console.log("Sin opcion");
+      break;
+  }
+
 }
 
 main();
