@@ -1,8 +1,8 @@
 ---
 topics:
   - title: tema 1
-    time: 1:00
+    time: '01:00'
   - title: tema 2
-    time: 2:00
+    time: '02:00'
   - title: tema 3
-    time: 3:00
+    time: '03:00'
