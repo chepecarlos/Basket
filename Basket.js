@@ -6,6 +6,8 @@ let fs = require('fs');
 let fsExtra = require('fs-extra');
 // const child_process = require('child_process');
 
+let TInicio;
+
 function ObtenerTitulo(Data) {
   let Titulo = Data.title;
   let Indice = Data.video_numero;
@@ -56,41 +58,46 @@ function CrearArchivoYT(Data, Titulo, Direcion) {
   let Salida = Descripcion_corta;
   Salida = Salida + "\n" + Descripcion_extra
   Salida = Salida + "\n\nIndice: \n"
-  for (i in Indice) {
+  for (var i in Indice) {
     Salida = Salida + Indice[i]['time'] + " " + Indice[i]['title'] + "\n";
   }
   fs.writeFileSync(Direcion + "/" + Titulo + '.md', Salida, 'utf8');
 
 }
 
-function RenderVideo(Archivo) {
-
-  const exec = require('child_process').exec;//, child;
-  const myShellScript = exec('bpsrender');
-  myShellScript.stdout.on('data', (data)=>{
-      console.log(data);
-      // do whatever you want here with data
+function CrearProxy() {
+  // bpsproxy
+  // $HOME/.local/bin/bpsproxy
+  TInicio = new Date();
+  const {
+    exec
+  } = require("child_process");
+  exec("$HOME/.local/bin/bpsproxy", (error, data, getter) => {
+    if (error) {
+      console.log("error", error.message);
+      return;
+    }
+    if (getter) {
+      var Tiempo = new Date() - TInicio;
+      var Segundos = parseInt((Tiempo / (1000)) % 60);
+      var Minutos = parseInt((Tiempo / (1000 * 60)) % 60);
+      var Horas = parseInt(Tiempo / (1000 * 60 * 60));
+      console.log("Crear el proxy tardo " + Horas + ":" + Minutos + ":" + Segundos);
+      console.log("data-", data);
+      return;
+    }
+    console.log("data:", data);
   });
-  myShellScript.stderr.on('data', (data)=>{
-      console.error(data);
-  });
-
-  // var inicio = new Date();
-  // var Comando = "ls -l"; //+ Archivo;
-  // // Todo: No ejecuta el comando
-  // var hijo = child_process.execSync(Comando, {
-  //   // shell: "ls -ls"
-  // });
-  // // hijo.stdout.pipe(process.stdout);
-  // hijo.on('exit', function() {
-  //   console.log("Termino");
-  //   // process.exit()
-  // });
-  // // Todo: Cuenta mal el tiempo
-  // var tiempo = new Date() - inicio;
-  // console.log('Tardo en procesarce: ' + tiempo + 'ms el archivo ' + Archivo + " :) ");
 
 }
+
+function RenderVideo(Archivo) {
+  // var inicio = new Date();
+  // var tiempo = new Date() - inicio;
+  // console.log('Tardo en procesarce: ' + tiempo + 'ms el archivo  :) ');
+
+}
+
 
 function main() {
   console.log("Opcion: " + process.argv[2]);
@@ -126,6 +133,10 @@ function main() {
     case '-r':
       console.log("Render Video");
       RenderVideo(process.argv[3]);
+      break;
+    case '-p':
+      console.log("Creando Proxy");
+      CrearProxy();
       break;
     default:
       console.log("Sin opcion");
