@@ -9,9 +9,6 @@ const TelegramBot = require('node-telegram-bot-api');
 
 var Contastes =  require('./Token');
 
-
-let IDChat = 30085334;
-const token = '286030904:AAE72jeNM3C9Y6w6BhzghDsOmnQUawC6l_k'; //Cambiar por el token de telegram
 const bot = new TelegramBot(Contastes.token, {
   polling: false
 });
@@ -25,7 +22,9 @@ function ObtenerTitulo(Data) {
 }
 
 function CrearFolder(Titulo) {
-  fsExtra.copy('Guion', Titulo, err => {
+  console.log(__filename);
+  console.log(__dirname);
+  fsExtra.copy(__dirname+'/Guion', Titulo, err => {
     if (err) return console.error(err);
     console.log('Folde Creados con titulo: ' + Titulo);
   });
