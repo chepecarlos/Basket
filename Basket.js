@@ -1,30 +1,30 @@
 #!/usr/bin/env node
-
 /*jshint esversion: 6 */
-let yaml = require('js-yaml');
+
+// https://www.npmjs.com/package/yaml
+const YAML = require('yaml');
 let fs = require('fs');
 let fsExtra = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
 // const child_process = require('child_process');
 
-var Contastes =  require('./Token');
+var Contastes = require('./Token');
 
 const bot = new TelegramBot(Contastes.token, {
   polling: false
 });
 
 function ObtenerTitulo(Data) {
-  let Titulo = Data.title;
-  let Indice = Data.video_numero;
+  let Titulo = Data.titulo;
+  // TODO id con tres digitos
+  let Indice = Data.id;
   Titulo = Titulo.replace(/ /g, "_");
   Titulo = Indice + "_" + Titulo;
   return Titulo;
 }
 
 function CrearFolder(Titulo) {
-  console.log(__filename);
-  console.log(__dirname);
-  fsExtra.copy(__dirname+'/Guion', Titulo, err => {
+  fsExtra.copy(__dirname + '/000_Nombre_Video', Titulo, err => {
     if (err) return console.error(err);
     console.log('Folde Creados con titulo: ' + Titulo);
   });
@@ -32,32 +32,111 @@ function CrearFolder(Titulo) {
 
 function CargarData(Direcion) {
   try {
-    let General = yaml.safeLoad(fs.readFileSync(Direcion + '/General.md', 'utf8'));
-    let Indice = yaml.safeLoad(fs.readFileSync(Direcion + '/Indice.md', 'utf8'));
-    let Link = yaml.safeLoad(fs.readFileSync(Direcion + '/Link.md', 'utf8'));
-    let Compartir = yaml.safeLoad(fs.readFileSync(Direcion + '/TextoParaCompartir.md', 'utf8'));
-    let Data = {
-      /* Bacio */
-    };
-    Data = General;
-    Data['topics'] = Indice['topics'];
-    Data['link'] = Link['link'];
-    Data['tools'] = Link['tools'];
-    Data['Descripcion_corta'] = Compartir['Descripcion_corta'];
-    Data['Descripcion_extra'] = Compartir['Descripcion_extra'];
+    let InfoProyecto = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/InfoProyecto.md', 'utf8'));
+    let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
+    let Link = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
+    let TextoParaCompartir = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
+    let Data = InfoProyecto;
+    Data.indice = Indice;
+    Data.link = Link;
+    Data.texto = TextoParaCompartir;
     return Data;
   } catch (e) {
+    // Todo: Error mas bonito
     console.log(e);
   }
 }
 
-function CrearArchivoNP(Data, Titulo, Direcion) {
-  let Descripcion_corta = Data['Descripcion_corta'];
-  let Salida = "---\n" + yaml.safeDump(Data, pattern = "yyyy-MM-dd") + "---\n\n" + Descripcion_corta;
-  fs.writeFileSync(Direcion + "/" + Titulo + '.md', Salida, 'utf8');
+function CrearArchivoNP(Folder) {
+  if (Folder == null) {
+    Folder = ".";
+  }
+  let Data = CargarData(Folder);
+  let Titulo = ObtenerTitulo(Data);
+  let Descripcion_corta = Data.texto.texto;
+
+  let DataNP = YAML.createNode({
+    title: Data.titulo
+  });
+
+  DataNP.add({
+    key: 'video_number',
+    value: Data.id
+  });
+  DataNP.add({
+    key: 'date',
+    value: Data.fecha
+  });
+  DataNP.add({
+    key: 'video_id',
+    value: Data.youtube_id
+  });
+
+  if (Data.codigo != null) {
+    DataNP.add({
+      key: 'repository',
+      value: Data.codigo
+    });
+  }
+
+  if (Data.indice != null) {
+    if (Data.indice.length > 0) {
+      let indice = YAML.createNode([{
+        title: Data.indice[0][1],
+        time: Data.indice[0][0]
+      }]);
+
+      for (let i = 1; i < Data.indice.length; i++) {
+        indice.add({
+          title: Data.indice[i][1],
+          time: Data.indice[i][0]
+        });
+      }
+      DataNP.add({
+        key: 'topics',
+        value: indice
+      });
+    }
+
+  }
+
+  if (Data.link != null) {
+    if (Data.link.length > 0) {
+      let links = YAML.createNode([{
+        Titulo: Data.link[0][0],
+        url: Data.link[0][1]
+      }]);
+      for (let i = 1; i < Data.link.length; i++) {
+        links.add({
+          Titulo: Data.link[i][0],
+          url: Data.link[i][1]
+        });
+      }
+      DataNP.add({
+        key: 'links',
+        value: links
+      });
+    }
+  }
+  const Documento = new YAML.Document();
+  Documento.contents = DataNP;
+
+  let salida = Documento.toString();
+  console.log(salida);
+  let SalidaDocumento = Folder + "/1.Guion/" + Titulo + '.md';
+  fs.writeFile(SalidaDocumento,
+    '---\n' + salida + "\n---\n\n " + Descripcion_corta,
+    error => {
+      if (error) {
+        console.error(error);
+      }
+      console.log("Generated " + SalidaDocumento);
+    }
+  );
 }
 
-function CrearArchivoYT(Data, Titulo, Direcion) {
+function CrearArchivoYT(Data, Titulo) {
+
   let Descripcion_corta = Data['Descripcion_corta'];
   let Descripcion_extra = Data['Descripcion_extra'];
   let Indice = Data['topics'];
@@ -126,6 +205,7 @@ function RenderVideo(Archivo) {
 }
 
 
+
 function main() {
   console.log("Opcion: " + process.argv[2]);
 
@@ -138,24 +218,18 @@ function main() {
       }
       break;
     case '-np':
-      if (process.argv[3] != null) {
-        let Data = CargarData(process.argv[3]);
-        let Titulo = ObtenerTitulo(Data);
-        CrearArchivoNP(Data, Titulo, process.argv[3]);
-      } else {
-        let Data = CargarData(".");
-        let Titulo = ObtenerTitulo(Data);
-        CrearArchivoNP(Data, Titulo, ".");
-      }
+      CrearArchivoNP(process.argv[3]);
       break;
     case '-yb':
+      let folderY;
       if (process.argv[3] != null) {
-        let Data = CargarData(process.argv[3]);
-        CrearArchivoYT(Data, "DescripcionYB", process.argv[3]);
+        folderY = process.argv[3];
       } else {
-        let Data = CargarData(".");
-        CrearArchivoYT(Data, "DescripcionYB", ".");
+        folderY = ".";
       }
+      let DataY = CargarData(folderY);
+      let TituloY = ObtenerTitulo(Data);
+      // CrearArchivoYT(Data, "DescripcionYB", folder);
       break;
     case '-r': // Renderizando Video de Blender
       console.log("Renderizar Video");
