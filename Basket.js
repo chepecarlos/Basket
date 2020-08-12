@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /*jshint esversion: 6 */
 
 // https://www.npmjs.com/package/yaml
@@ -36,10 +37,14 @@ function CargarData(Direcion) {
     let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
     let Link = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
     let TextoParaCompartir = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
+    let DataLink = YAML.parse(fs.readFileSync(__dirname + '/Data/link.md', 'utf8'));
+    let TextoExtra = YAML.parse(fs.readFileSync(__dirname + '/Data/TextoExtra.md', 'utf8'));
     let Data = InfoProyecto;
     Data.indice = Indice;
     Data.link = Link;
     Data.texto = TextoParaCompartir;
+    Data.DataLink = DataLink;
+    Data.TextoExtra = TextoExtra;
     return Data;
   } catch (e) {
     // Todo: Error mas bonito
@@ -51,9 +56,9 @@ function CrearArchivoNP(Folder) {
   if (Folder == null) {
     Folder = ".";
   }
-  let Data = CargarData(Folder);
-  let Titulo = ObtenerTitulo(Data);
-  let Descripcion_corta = Data.texto.texto;
+  var Data = CargarData(Folder);
+  var Titulo = ObtenerTitulo(Data);
+  var Descripcion_corta = Data.texto.texto;
 
   let DataNP = YAML.createNode({
     title: Data.titulo
@@ -130,25 +135,62 @@ function CrearArchivoNP(Folder) {
       if (error) {
         console.error(error);
       }
-      console.log("Generated " + SalidaDocumento);
+      console.log("Generated Noche Programacion" + SalidaDocumento);
     }
   );
 }
 
-function CrearArchivoYT(Data, Titulo) {
-
-  let Descripcion_corta = Data['Descripcion_corta'];
-  let Descripcion_extra = Data['Descripcion_extra'];
-  let Indice = Data['topics'];
-
-  let Salida = Descripcion_corta;
-  Salida = Salida + "\n" + Descripcion_extra
-  Salida = Salida + "\n\nIndice: \n"
-  for (var i in Indice) {
-    Salida = Salida + Indice[i]['time'] + " " + Indice[i]['title'] + "\n";
+function CrearArchivoYT(Folder) {
+  if (Folder == null) {
+    Folder = ".";
   }
-  fs.writeFileSync(Direcion + "/" + Titulo + '.md', Salida, 'utf8');
+  var Data = CargarData(Folder);
+  var Titulo = ObtenerTitulo(Data);
+  var DataYT = "";
+  DataYT += Data.texto.texto + "\n\n";
+  DataYT += "Link Referencia:\n" + Data.texto.link_np + "\n\n";
 
+  if (Data.indice != null) {
+    if (Data.indice.length > 0) {
+      DataYT += "Indice: \n";
+      for (let i = 0; i < Data.indice.length; i++) {
+        DataYT += Data.indice[i][0] + " " + Data.indice[i][1] + "\n";
+      }
+    }
+    DataYT += "\n\n";
+  }
+
+  if (Data.DataLink != null) {
+    if (Data.DataLink.length > 0) {
+      for (let i = 0; i < Data.DataLink.length; i++) {
+        DataYT += Data.DataLink[i] + "\n";
+      }
+    }
+    DataYT += "\n\n";
+  }
+
+  DataYT += Data.TextoExtra.Texto_final + "\n\n"
+
+  if (Data.tags != null) {
+    if (Data.tags.length > 0) {
+      DataYT += "#ALSW ";
+      for (let i = 0; i < Data.tags.length; i++) {
+        DataYT += "#" + Data.tags[i] + " ";
+      }
+    }
+  }
+
+  console.log(DataYT);
+
+  let SalidaDocumento = Folder + "/1.Guion/" + Titulo + 'YT.md';
+  fs.writeFile(SalidaDocumento, DataYT,
+    error => {
+      if (error) {
+        console.error(error);
+      }
+      console.log("Generated Archivo Youtube" + SalidaDocumento);
+    }
+  );
 }
 
 function CrearProxy() {
@@ -204,8 +246,6 @@ function RenderVideo(Archivo) {
   });
 }
 
-
-
 function main() {
   console.log("Opcion: " + process.argv[2]);
 
@@ -220,16 +260,8 @@ function main() {
     case '-np':
       CrearArchivoNP(process.argv[3]);
       break;
-    case '-yb':
-      let folderY;
-      if (process.argv[3] != null) {
-        folderY = process.argv[3];
-      } else {
-        folderY = ".";
-      }
-      let DataY = CargarData(folderY);
-      let TituloY = ObtenerTitulo(Data);
-      // CrearArchivoYT(Data, "DescripcionYB", folder);
+    case '-yt':
+      CrearArchivoYT(process.argv[3]);
       break;
     case '-r': // Renderizando Video de Blender
       console.log("Renderizar Video");
