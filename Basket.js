@@ -194,7 +194,7 @@ function CrearArchivoYT(Folder) {
 }
 
 function CrearProxy() {
-  bot.sendMessage(IDChat, "[Blender] Empezando a crear Proxy");
+  bot.sendMessage(Contastes.IDChat, "[Blender] Empezando a crear Proxy");
   let Inicio = new Date();
   const {
     exec
@@ -202,7 +202,7 @@ function CrearProxy() {
   exec("$HOME/.local/bin/bpsproxy", (error, data, getter) => {
     if (error) {
       console.log("error", error.message);
-      bot.sendMessage(IDChat, "[Blender] Error creando Proxy");
+      bot.sendMessage(Contastes.IDChat, "[Blender] Error creando Proxy");
       return;
     }
     if (getter) {
@@ -212,7 +212,7 @@ function CrearProxy() {
       var Horas = parseInt(Tiempo / (1000 * 60 * 60));
       console.log("Crear el proxy tardo " + Horas + ":" + Minutos + ":" + Segundos);
       console.log("data-", data);
-      bot.sendMessage(IDChat, "[Blender] Termino de crear Proxy - " + Horas + "h:" + Minutos + "m:" + Segundos + "s");
+      bot.sendMessage(Contastes.IDChat, "[Blender] Termino de crear Proxy - " + Horas + "h:" + Minutos + "m:" + Segundos + "s");
       return;
     }
     console.log("data:", data);
@@ -221,15 +221,16 @@ function CrearProxy() {
 }
 
 function RenderVideo(Archivo) {
-  bot.sendMessage(IDChat, "[Blender] Empezando a Renderizar el Video: " + Archivo);
+  bot.sendMessage(Contastes.IDChat, "[Blender] Empezando a Renderizar el Video: " + Archivo);
   let Inicio = new Date();
   const {
     exec
   } = require("child_process");
   exec("$HOME/.local/bin/bpsrender " + Archivo, (error, data, getter) => {
     if (error) {
-      console.log("error", error.message);
-      bot.sendMessage(IDChat, "[Blender] Error Renderizar el video " + Archivo);
+      console.log("error: ", error.message);
+      console.log("data: ")
+      bot.sendMessage(Contastes.IDChat, "[Blender] Error Renderizar el video " + Archivo);
       return;
     }
     if (getter) {
@@ -239,7 +240,7 @@ function RenderVideo(Archivo) {
       var Horas = parseInt(Tiempo / (1000 * 60 * 60));
       console.log("Crear el proxy tardo " + Horas + ":" + Minutos + ":" + Segundos);
       console.log("data-", data);
-      bot.sendMessage(IDChat, "[Blender] Ya esta listo el video " + Archivo + " en " + Horas + "h:" + Minutos + "m:" + Segundos + "s");
+      bot.sendMessage(Contastes.IDChat, "[Blender] Ya esta listo el video " + Archivo + " en " + Horas + "h:" + Minutos + "m:" + Segundos + "s");
       return;
     }
     console.log("data:", data);
@@ -270,6 +271,14 @@ function main() {
     case '-p': // Crear Proxy de Blender
       console.log("Creando Proxy");
       CrearProxy();
+      break;
+    case '-h': // Crear Proxy de Blender
+      console.log("Opciones");
+      console.log("-d [folder] : Crea directorio para video");
+      console.log("-p : Crear proxy");
+      console.log("-r [folder] : Crear render del video");
+      console.log("-np : Crear archivo Noche Programacion");
+      console.log("-yt : Crear archivo Youtube");
       break;
     default:
       console.log("Sin opcion");
