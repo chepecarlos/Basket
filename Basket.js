@@ -108,12 +108,12 @@ function CrearArchivoNP(Folder) {
   if (Data.link != null) {
     if (Data.link.length > 0) {
       let links = YAML.createNode([{
-        Titulo: Data.link[0][0],
+        title: Data.link[0][0],
         url: Data.link[0][1]
       }]);
       for (let i = 1; i < Data.link.length; i++) {
         links.add({
-          Titulo: Data.link[i][0],
+          title: Data.link[i][0],
           url: Data.link[i][1]
         });
       }
