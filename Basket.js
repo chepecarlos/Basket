@@ -247,6 +247,36 @@ function RenderVideo(Archivo) {
   });
 }
 
+function Trasformando60(Archivo) {
+  var Parte = Archivo.split(".");
+  var Archivo60 = Parte[0] + "_60fps." + Parte[1];
+  var Comando = "ffmpeg -i " + Archivo + " -r 60 " + Archivo60
+  bot.sendMessage(Contastes.IDChat, "[ffmpeg] Trasformando a 60fps: " + Archivo);
+  let Inicio = new Date();
+  const {
+    exec
+  } = require("child_process");
+  exec(Comando, (error, data, getter) => {
+    if (error) {
+      console.log("error: ", error.message);
+      console.log("data: ")
+      bot.sendMessage(Contastes.IDChat, "[ffmpeg] Error en ffmpeg " + Archivo);
+      return;
+    }
+    if (getter) {
+      var Tiempo = new Date() - Inicio;
+      var Segundos = parseInt((Tiempo / (1000)) % 60);
+      var Minutos = parseInt((Tiempo / (1000 * 60)) % 60);
+      var Horas = parseInt(Tiempo / (1000 * 60 * 60));
+      console.log("Crear el proxy tardo " + Horas + ":" + Minutos + ":" + Segundos);
+      console.log("data-", data);
+      bot.sendMessage(Contastes.IDChat, "[ffmpeg] Tarformacion lista " + Archivo + " en " + Horas + "h:" + Minutos + "m:" + Segundos + "s");
+      return;
+    }
+    console.log("data:", data);
+  });
+}
+
 function main() {
   console.log("Opcion: " + process.argv[2]);
 
@@ -272,13 +302,19 @@ function main() {
       console.log("Creando Proxy");
       CrearProxy();
       break;
+    case '-t':
+      console.log("Trasformando a 60 FPS");
+      Trasformando60(process.argv[3]);
+      break;
     case '-h': // Crear Proxy de Blender
       console.log("Opciones");
       console.log("-d [folder] : Crea directorio para video");
       console.log("-p : Crear proxy");
-      console.log("-r [folder] : Crear render del video");
+      console.log("-r [Archibo.blen] : Crear render del video");
       console.log("-np : Crear archivo Noche Programacion");
       console.log("-yt : Crear archivo Youtube");
+      console.log("-t [Archivo]: trasforma a 60 fps");
+      console.log("-h : Ayuda")
       break;
     default:
       console.log("Sin opcion");
