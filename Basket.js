@@ -7,6 +7,7 @@ const YAML = require('yaml');
 let fs = require('fs');
 let fsExtra = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
+const yargs = require("yargs");
 // const child_process = require('child_process');
 
 var Contastes = require('./Token');
@@ -277,48 +278,69 @@ function Trasformando60(Archivo) {
   });
 }
 
-function main() {
-  console.log("Opcion: " + process.argv[2]);
+const opciones = yargs
+  .command(
+    'Heramientas para produccion contenido de ALSW'
+  )
+  .example('$0 -p .', 'Crea proxy dentro del folder actual')
+  .option("f", {
+    alias: "folder",
+    describe: "crea folde de proyecto",
+    type: "string"
+  })
+  .option("p", {
+    alias: "proxy",
+    describe: "crear proxy",
+  })
+  .option("r", {
+    alias: "render",
+    describe: "crear render del video",
+    type: "string"
+  })
+  .option("t", {
+    alias: "trasformando",
+    describe: "Trasformar video a 60fps",
+    type: "string"
+  })
+  .option("n", {
+    alias: "nocheprogramacion",
+    describe: "crea archivo de nocheprogramacion",
+    type: "string"
+  })
+  .option("y", {
+    alias: "youtube",
+    describe: "crea archivo de youtube",
+    type: "string"
+  })
+  .help('h')
+  .alias('h', 'help')
+  .argv;
 
-  switch (process.argv[2]) {
-    case '-d':
-      if (process.argv[3] != null) {
-        CrearFolder(process.argv[3]);
-      } else {
-        CrearFolder("000_Nombre_Video");
-      }
-      break;
-    case '-np':
-      CrearArchivoNP(process.argv[3]);
-      break;
-    case '-yt':
-      CrearArchivoYT(process.argv[3]);
-      break;
-    case '-r': // Renderizando Video de Blender
+function main() {
+  if (opciones.folder) {
+    if (opciones.falder != null) {
+      CrearFolder(opciones.falder);
+    } else {
+      CrearFolder("000_Nombre_Video");
+    }
+  } else if (opciones.proxy) {
+    console.log("Empezando a crear Proxy");
+    CrearProxy();
+  } else if (opciones.render) {
+    if (opciones.render != null) {
       console.log("Renderizar Video");
-      RenderVideo(process.argv[3]);
-      break;
-    case '-p': // Crear Proxy de Blender
-      console.log("Creando Proxy");
-      CrearProxy();
-      break;
-    case '-t':
-      console.log("Trasformando a 60 FPS");
-      Trasformando60(process.argv[3]);
-      break;
-    case '-h': // Crear Proxy de Blender
-      console.log("Opciones");
-      console.log("-d [folder] : Crea directorio para video");
-      console.log("-p : Crear proxy");
-      console.log("-r [Archibo.blen] : Crear render del video");
-      console.log("-np : Crear archivo Noche Programacion");
-      console.log("-yt : Crear archivo Youtube");
-      console.log("-t [Archivo]: trasforma a 60 fps");
-      console.log("-h : Ayuda")
-      break;
-    default:
-      console.log("Sin opcion");
-      break;
+      RenderVideo(opciones.render);
+    }
+  } else if (opciones.trasformando) {
+    console.log("Trasformando a 60 FPS");
+    Trasformando60(opciones.trasformando);
+  } else if (opciones.nocheprogramacion) {
+    console.log("noche programacion")
+    CrearArchivoNP(opciones.nocheprogramacion);
+  } else if (opciones.youtube) {
+    CrearArchivoYT(opciones.youtube);
+  } else {
+    console.log("sin opciones usar -h para opciones")
   }
 }
 
