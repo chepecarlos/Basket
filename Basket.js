@@ -318,8 +318,8 @@ const opciones = yargs
 
 function main() {
   if (opciones.folder) {
-    if (opciones.falder != null) {
-      CrearFolder(opciones.falder);
+    if (opciones.folder != null) {
+      CrearFolder(opciones.folder);
     } else {
       CrearFolder("000_Nombre_Video");
     }
