@@ -32,10 +32,42 @@ function CrearFolder(Titulo) {
   });
 }
 
+function CargarIndice(Direcion) {
+  let Devolver = YAML.createNode([{
+    title: "pollo",
+    time: "00:00"
+  }]);
+  let Indices = fs.readFileSync(Direcion, 'utf8');
+  Indices = Indices.split('\n');
+  Indices.forEach((IndiceTemporal) => {
+    let valor = IndiceTemporal.match('^[0-9][0-9]:[0-9][0-9]');
+    // console.log(valor);
+    if (valor != null) {
+      IndiceTemporal = IndiceTemporal.replace(valor + ' ', '');
+      // console.log(valor[0] + " - " + IndiceTemporal);
+      if (Devolver == null) {
+        Devolver = YAML.createNode([{
+          title: IndiceTemporal,
+          time: valor[0]
+        }]);
+      } else {
+        Devolver.add({
+          title: IndiceTemporal,
+          time: valor[0]
+        });
+      }
+    }
+  });
+  console.log(Devolver);
+  return Devolver;
+}
+
+
 function CargarData(Direcion) {
   try {
     let InfoProyecto = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/InfoProyecto.md', 'utf8'));
-    let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
+    let Indice = CargarIndice(Direcion + '/1.Guion/Indice.md');
+      // let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
     let Link = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
     let TextoParaCompartir = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
     let DataLink = YAML.parse(fs.readFileSync(__dirname + '/Data/link.md', 'utf8'));
@@ -54,7 +86,7 @@ function CargarData(Direcion) {
 }
 
 function CrearArchivoNP(Folder) {
-  if (Folder == null) {
+  if (Folder != null) {
     Folder = ".";
   }
   var Data = CargarData(Folder);
@@ -85,26 +117,29 @@ function CrearArchivoNP(Folder) {
     });
   }
 
-  if (Data.indice != null) {
-    if (Data.indice.length > 0) {
-      let indice = YAML.createNode([{
-        title: Data.indice[0][1],
-        time: Data.indice[0][0]
-      }]);
-
-      for (let i = 1; i < Data.indice.length; i++) {
-        indice.add({
-          title: Data.indice[i][1],
-          time: Data.indice[i][0]
-        });
-      }
-      DataNP.add({
-        key: 'topics',
-        value: indice
-      });
-    }
-
+  if(Data.indice != null){
+    console.log(Data.indice[0].title);
   }
+  // if (Data.indice != null) {
+  //   if (Data.indice.length > 0) {
+  //     let indice = YAML.createNode([{
+  //       title: Data.indice[0][1],
+  //       time: Data.indice[0][0]
+  //     }]);
+  //
+  //     for (let i = 1; i < Data.indice.length; i++) {
+  //       indice.add({
+  //         title: Data.indice[i][1],
+  //         time: Data.indice[i][0]
+  //       });
+  //     }
+  //     DataNP.add({
+  //       key: 'topics',
+  //       value: indice
+  //     });
+  //   }
+  //
+  // }
 
   if (Data.link != null) {
     if (Data.link.length > 0) {
@@ -304,8 +339,7 @@ const opciones = yargs
   })
   .option("n", {
     alias: "nocheprogramacion",
-    describe: "crea archivo de nocheprogramacion",
-    type: "string"
+    describe: "crea archivo de nocheprogramacion"
   })
   .option("y", {
     alias: "youtube",
@@ -335,7 +369,7 @@ function main() {
     console.log("Trasformando a 60 FPS");
     Trasformando60(opciones.trasformando);
   } else if (opciones.nocheprogramacion) {
-    console.log("noche programacion")
+    console.log("noche programacion ");
     CrearArchivoNP(opciones.nocheprogramacion);
   } else if (opciones.youtube) {
     CrearArchivoYT(opciones.youtube);
