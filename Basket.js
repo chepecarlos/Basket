@@ -7,6 +7,7 @@ const YAML = require('yaml');
 let fs = require('fs');
 let fsExtra = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
+const yargs = require("yargs");
 // const child_process = require('child_process');
 
 var Contastes = require('./Token');
@@ -31,10 +32,42 @@ function CrearFolder(Titulo) {
   });
 }
 
+function CargarIndice(Direcion) {
+  let Devolver = YAML.createNode([{
+    title: "pollo",
+    time: "00:00"
+  }]);
+  let Indices = fs.readFileSync(Direcion, 'utf8');
+  Indices = Indices.split('\n');
+  Indices.forEach((IndiceTemporal) => {
+    let valor = IndiceTemporal.match('^[0-9][0-9]:[0-9][0-9]');
+    // console.log(valor);
+    if (valor != null) {
+      IndiceTemporal = IndiceTemporal.replace(valor + ' ', '');
+      // console.log(valor[0] + " - " + IndiceTemporal);
+      if (Devolver == null) {
+        Devolver = YAML.createNode([{
+          title: IndiceTemporal,
+          time: valor[0]
+        }]);
+      } else {
+        Devolver.add({
+          title: IndiceTemporal,
+          time: valor[0]
+        });
+      }
+    }
+  });
+  console.log(Devolver);
+  return Devolver;
+}
+
+
 function CargarData(Direcion) {
   try {
     let InfoProyecto = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/InfoProyecto.md', 'utf8'));
-    let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
+    let Indice = CargarIndice(Direcion + '/1.Guion/Indice.md');
+      // let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
     let Link = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
     let TextoParaCompartir = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
     let DataLink = YAML.parse(fs.readFileSync(__dirname + '/Data/link.md', 'utf8'));
@@ -53,7 +86,7 @@ function CargarData(Direcion) {
 }
 
 function CrearArchivoNP(Folder) {
-  if (Folder == null) {
+  if (Folder != null) {
     Folder = ".";
   }
   var Data = CargarData(Folder);
@@ -84,26 +117,29 @@ function CrearArchivoNP(Folder) {
     });
   }
 
-  if (Data.indice != null) {
-    if (Data.indice.length > 0) {
-      let indice = YAML.createNode([{
-        title: Data.indice[0][1],
-        time: Data.indice[0][0]
-      }]);
-
-      for (let i = 1; i < Data.indice.length; i++) {
-        indice.add({
-          title: Data.indice[i][1],
-          time: Data.indice[i][0]
-        });
-      }
-      DataNP.add({
-        key: 'topics',
-        value: indice
-      });
-    }
-
+  if(Data.indice != null){
+    console.log(Data.indice[0].title);
   }
+  // if (Data.indice != null) {
+  //   if (Data.indice.length > 0) {
+  //     let indice = YAML.createNode([{
+  //       title: Data.indice[0][1],
+  //       time: Data.indice[0][0]
+  //     }]);
+  //
+  //     for (let i = 1; i < Data.indice.length; i++) {
+  //       indice.add({
+  //         title: Data.indice[i][1],
+  //         time: Data.indice[i][0]
+  //       });
+  //     }
+  //     DataNP.add({
+  //       key: 'topics',
+  //       value: indice
+  //     });
+  //   }
+  //
+  // }
 
   if (Data.link != null) {
     if (Data.link.length > 0) {
@@ -277,48 +313,68 @@ function Trasformando60(Archivo) {
   });
 }
 
-function main() {
-  console.log("Opcion: " + process.argv[2]);
+const opciones = yargs
+  .command(
+    'Heramientas para produccion contenido de ALSW'
+  )
+  .example('$0 -p .', 'Crea proxy dentro del folder actual')
+  .option("f", {
+    alias: "folder",
+    describe: "crea folde de proyecto",
+    type: "string"
+  })
+  .option("p", {
+    alias: "proxy",
+    describe: "crear proxy",
+  })
+  .option("r", {
+    alias: "render",
+    describe: "crear render del video",
+    type: "string"
+  })
+  .option("t", {
+    alias: "trasformando",
+    describe: "Trasformar video a 60fps",
+    type: "string"
+  })
+  .option("n", {
+    alias: "nocheprogramacion",
+    describe: "crea archivo de nocheprogramacion"
+  })
+  .option("y", {
+    alias: "youtube",
+    describe: "crea archivo de youtube",
+    type: "string"
+  })
+  .help('h')
+  .alias('h', 'help')
+  .argv;
 
-  switch (process.argv[2]) {
-    case '-d':
-      if (process.argv[3] != null) {
-        CrearFolder(process.argv[3]);
-      } else {
-        CrearFolder("000_Nombre_Video");
-      }
-      break;
-    case '-np':
-      CrearArchivoNP(process.argv[3]);
-      break;
-    case '-yt':
-      CrearArchivoYT(process.argv[3]);
-      break;
-    case '-r': // Renderizando Video de Blender
+function main() {
+  if (opciones.folder) {
+    if (opciones.folder != null) {
+      CrearFolder(opciones.folder);
+    } else {
+      CrearFolder("000_Nombre_Video");
+    }
+  } else if (opciones.proxy) {
+    console.log("Empezando a crear Proxy");
+    CrearProxy();
+  } else if (opciones.render) {
+    if (opciones.render != null) {
       console.log("Renderizar Video");
-      RenderVideo(process.argv[3]);
-      break;
-    case '-p': // Crear Proxy de Blender
-      console.log("Creando Proxy");
-      CrearProxy();
-      break;
-    case '-t':
-      console.log("Trasformando a 60 FPS");
-      Trasformando60(process.argv[3]);
-      break;
-    case '-h': // Crear Proxy de Blender
-      console.log("Opciones");
-      console.log("-d [folder] : Crea directorio para video");
-      console.log("-p : Crear proxy");
-      console.log("-r [Archibo.blen] : Crear render del video");
-      console.log("-np : Crear archivo Noche Programacion");
-      console.log("-yt : Crear archivo Youtube");
-      console.log("-t [Archivo]: trasforma a 60 fps");
-      console.log("-h : Ayuda");
-      break;
-    default:
-      console.log("Sin opcion");
-      break;
+      RenderVideo(opciones.render);
+    }
+  } else if (opciones.trasformando) {
+    console.log("Trasformando a 60 FPS");
+    Trasformando60(opciones.trasformando);
+  } else if (opciones.nocheprogramacion) {
+    console.log("noche programacion ");
+    CrearArchivoNP(opciones.nocheprogramacion);
+  } else if (opciones.youtube) {
+    CrearArchivoYT(opciones.youtube);
+  } else {
+    console.log("sin opciones usar -h para opciones")
   }
 }
 

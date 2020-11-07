@@ -1,17 +1,18 @@
 {
   "name": "BasketALSW",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "Basket.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "ChepeCaros",
+  "author": "ChepeCaros (https://chepecarlos.com)",
   "license": "ISC",
   "dependencies": {
     "fs-extra": "^9.0.1",
     "node-telegram-bot-api": "^0.50.0",
-    "yaml": "^1.10.0"
+    "yaml": "^1.10.0",
+    "yargs": "^16.1.0"
   },
   "bin": {
     "BasketALSW": "Basket.js"
