@@ -1,13 +1,9 @@
 ---
--
-  - Titulo 1
-  - URL 1
--
-  - Titulo 2
-  - URL 2
--
-  - Titulo 3
-  - URL 3
--
-  - Titulo 4
-  - URL 4
+- Titulo: Titulo uno
+  URL: url uno
+- Titulo: Titulo uno
+  URL: url uno
+- Titulo: Titulo uno
+  URL: url uno
+- Titulo: Titulo uno
+  URL: url uno

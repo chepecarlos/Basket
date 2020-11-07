@@ -1,0 +1,4 @@
+---
+- nombre: Arduino uno
+- nombre: Resistencia 330k
+- nombre: Led

@@ -3,7 +3,7 @@
 /*jshint esversion: 6 */
 
 // https://www.npmjs.com/package/yaml
-const YAML = require('yaml');
+const yaml = require('js-yaml');
 let fs = require('fs');
 let fsExtra = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
@@ -33,51 +33,72 @@ function CrearFolder(Titulo) {
 }
 
 function CargarIndice(Direcion) {
-  let Devolver = YAML.createNode([{
-    title: "pollo",
-    time: "00:00"
-  }]);
+  let Data = [];
   let Indices = fs.readFileSync(Direcion, 'utf8');
   Indices = Indices.split('\n');
-  Indices.forEach((IndiceTemporal) => {
+  Indices.forEach((IndiceTemporal, i) => {
     let valor = IndiceTemporal.match('^[0-9][0-9]:[0-9][0-9]');
-    // console.log(valor);
     if (valor != null) {
       IndiceTemporal = IndiceTemporal.replace(valor + ' ', '');
-      // console.log(valor[0] + " - " + IndiceTemporal);
-      if (Devolver == null) {
-        Devolver = YAML.createNode([{
-          title: IndiceTemporal,
-          time: valor[0]
-        }]);
-      } else {
-        Devolver.add({
-          title: IndiceTemporal,
-          time: valor[0]
-        });
-      }
+      Data.push({
+        "title": IndiceTemporal,
+        "time": valor[0]
+      });
     }
   });
-  console.log(Devolver);
-  return Devolver;
+  return Data;
 }
 
 
 function CargarData(Direcion) {
   try {
-    let InfoProyecto = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/InfoProyecto.md', 'utf8'));
-    let Indice = CargarIndice(Direcion + '/1.Guion/Indice.md');
-      // let Indice = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Indice.md', 'utf8'));
-    let Link = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
-    let TextoParaCompartir = YAML.parse(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
-    let DataLink = YAML.parse(fs.readFileSync(__dirname + '/Data/link.md', 'utf8'));
-    let TextoExtra = YAML.parse(fs.readFileSync(__dirname + '/Data/TextoExtra.md', 'utf8'));
-    let Data = InfoProyecto;
-    Data.indice = Indice;
-    Data.link = Link;
-    Data.texto = TextoParaCompartir;
-    Data.DataLink = DataLink;
-    Data.TextoExtra = TextoExtra;
+
+    let Data = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/InfoProyecto.md', 'utf8'));
+
+    let TextoExtra = yaml.safeLoad(fs.readFileSync(__dirname + '/Data/TextoExtra.md', 'utf8'));
+    Object.assign(Data, TextoExtra);
+
+    let TextoParaCompartir = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
+    Object.assign(Data, TextoParaCompartir);
+
+    try {
+      let Indice = CargarIndice(Direcion + '/1.Guion/Indice.md');
+      Object.assign(Data, {
+        'topics': Indice
+      });
+    } catch (e) {
+      console.log("No encontrado Indice.md");
+    }
+
+    try {
+      let Link = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
+      Object.assign(Data, {
+        'links': Link
+      });
+    } catch (ex) {
+      console.log("No Encontrado Link.md");
+    }
+
+    try {
+      let DataLink = yaml.safeLoad(fs.readFileSync(__dirname + '/Data/link.md', 'utf8'));
+      Object.assign(Data, {
+        'DataLink': DataLink
+      });
+    } catch (ex) {
+      // Show error
+      console.log(ex);
+    }
+    try {
+      let DataPiezas = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Piesas.md', 'utf8'));
+      Object.assign(Data, {
+        'Piesas': DataPiezas
+      });
+    } catch (e) {
+      console.log("No encontrada Piezas");
+    } finally {
+
+    }
+
     return Data;
   } catch (e) {
     // Todo: Error mas bonito
@@ -91,89 +112,32 @@ function CrearArchivoNP(Folder) {
   }
   var Data = CargarData(Folder);
   var Titulo = ObtenerTitulo(Data);
-  var Descripcion_corta = Data.texto.texto;
+  var Descripcion_corta = Data.texto_np;
 
-  let DataNP = YAML.createNode({
-    title: Data.titulo
-  });
+  let Exportar = {};
 
-  DataNP.add({
-    key: 'video_number',
-    value: Data.id
-  });
-  DataNP.add({
-    key: 'date',
-    value: Data.fecha
-  });
-  DataNP.add({
-    key: 'video_id',
-    value: Data.youtube_id
-  });
-
+  Exportar.title = Data.titulo;
+  Exportar.video_number = Data.id;
+  Exportar.date = Data.fecha.toISOString().split("T")[0];
+  Exportar.video_id = Data.youtube_id;
   if (Data.codigo != null) {
-    DataNP.add({
-      key: 'repository',
-      value: Data.codigo
-    });
+    Exportar.repository = Data.codigo;
+  }
+  if (Data.topics != null) {
+    Exportar.topics = Data.topics;
+  }
+  if (Data.links != null) {
+    Exportar.links = Data.links;
+  }
+  if (Data.Piesas != null ){
+    Exportar.piezas = Data.Piesas;
   }
 
-  if(Data.indice != null){
-    console.log(Data.indice[0].title);
-  }
-  // if (Data.indice != null) {
-  //   if (Data.indice.length > 0) {
-  //     let indice = YAML.createNode([{
-  //       title: Data.indice[0][1],
-  //       time: Data.indice[0][0]
-  //     }]);
-  //
-  //     for (let i = 1; i < Data.indice.length; i++) {
-  //       indice.add({
-  //         title: Data.indice[i][1],
-  //         time: Data.indice[i][0]
-  //       });
-  //     }
-  //     DataNP.add({
-  //       key: 'topics',
-  //       value: indice
-  //     });
-  //   }
-  //
-  // }
-
-  if (Data.link != null) {
-    if (Data.link.length > 0) {
-      let links = YAML.createNode([{
-        title: Data.link[0][0],
-        url: Data.link[0][1]
-      }]);
-      for (let i = 1; i < Data.link.length; i++) {
-        links.add({
-          title: Data.link[i][0],
-          url: Data.link[i][1]
-        });
-      }
-      DataNP.add({
-        key: 'links',
-        value: links
-      });
-    }
-  }
-  const Documento = new YAML.Document();
-  Documento.contents = DataNP;
-
-  let salida = Documento.toString();
-  console.log(salida);
-  let SalidaDocumento = Folder + "/1.Guion/" + Titulo + '.md';
-  fs.writeFile(SalidaDocumento,
-    '---\n' + salida + "\n---\n\n " + Descripcion_corta,
-    error => {
-      if (error) {
-        console.error(error);
-      }
-      console.log("Generated Noche Programacion" + SalidaDocumento);
-    }
-  );
+  var ExportarD = "---\n" + yaml.safeDump(Exportar) + "---\n\n" + Descripcion_corta;
+  fs.writeFileSync(Titulo + ".md", ExportarD, function(err, file) {
+    if (err) throw err;
+    console.log("Saved!");
+  });
 }
 
 function CrearArchivoYT(Folder) {
@@ -265,7 +229,7 @@ function RenderVideo(Archivo) {
   exec("$HOME/.local/bin/bpsrender " + Archivo, (error, data, getter) => {
     if (error) {
       console.log("error: ", error.message);
-      console.log("data: ")
+      console.log("data: ");
       bot.sendMessage(Contastes.IDChat, "[Blender] Error Renderizar el video " + Archivo);
       return;
     }
@@ -286,7 +250,7 @@ function RenderVideo(Archivo) {
 function Trasformando60(Archivo) {
   var Parte = Archivo.split(".");
   var Archivo60 = Parte[0] + "_60fps." + Parte[1];
-  var Comando = "ffmpeg -i " + Archivo + " -r 60 " + Archivo60
+  var Comando = "ffmpeg -i " + Archivo + " -r 60 " + Archivo60;
   bot.sendMessage(Contastes.IDChat, "[ffmpeg] Trasformando a 60fps: " + Archivo);
   let Inicio = new Date();
   const {
@@ -295,7 +259,7 @@ function Trasformando60(Archivo) {
   exec(Comando, (error, data, getter) => {
     if (error) {
       console.log("error: ", error.message);
-      console.log("data: ")
+      console.log("data: ");
       bot.sendMessage(Contastes.IDChat, "[ffmpeg] Error en ffmpeg " + Archivo);
       return;
     }
@@ -374,7 +338,7 @@ function main() {
   } else if (opciones.youtube) {
     CrearArchivoYT(opciones.youtube);
   } else {
-    console.log("sin opciones usar -h para opciones")
+    console.log("sin opciones usar -h para opciones");
   }
 }
 
