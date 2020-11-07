@@ -169,7 +169,7 @@ function CrearArchivoYT(Folder) {
     DataYT += "\n\n";
   }
 
-  DataYT += Data.TextoExtra.Texto_final + "\n\n"
+  DataYT += Data.TextoExtra.Texto_final + "\n\n";
 
   if (Data.tags != null) {
     if (Data.tags.length > 0) {
@@ -314,7 +314,7 @@ function main() {
       console.log("-np : Crear archivo Noche Programacion");
       console.log("-yt : Crear archivo Youtube");
       console.log("-t [Archivo]: trasforma a 60 fps");
-      console.log("-h : Ayuda")
+      console.log("-h : Ayuda");
       break;
     default:
       console.log("Sin opcion");
