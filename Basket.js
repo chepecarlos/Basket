@@ -20,6 +20,9 @@ function ObtenerTitulo(Data) {
   // TODO id con tres digitos
   let Indice = Data.id;
   Titulo = Titulo.replace(/ /g, "_");
+  if (Data.id_Curso != null) {
+    Indice = Data.id_Curso + "." + Indice
+  }
   Titulo = Indice + "_" + Titulo;
   return Titulo;
 }
@@ -71,8 +74,14 @@ function CargarData(Direcion) {
 
     try {
       let Link = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
-      Object.assign(Data, {
-        'links': Link
+      Data.links = []
+
+      Link.forEach(LinkTmp => {
+        // console.log(LinkTmp);
+        Data.links.push({
+          "title": LinkTmp.Titulo,
+          "url": LinkTmp.URL
+        });
       });
     } catch (ex) {
       console.log("No Encontrado Link.md");
@@ -97,7 +106,7 @@ function CargarData(Direcion) {
     } finally {
 
     }
-
+    console.log(Data);
     return Data;
   } catch (e) {
     // Todo: Error mas bonito
@@ -111,7 +120,6 @@ function CrearArchivoNP(Folder) {
   }
   var Data = CargarData(Folder);
   var Titulo = ObtenerTitulo(Data);
-  var Descripcion_corta = Data.texto_np;
 
   let Exportar = {};
 
@@ -132,8 +140,13 @@ function CrearArchivoNP(Folder) {
     Exportar.piezas = Data.Piesas;
   }
 
-  var ExportarD = "---\n" + yaml.safeDump(Exportar) + "---\n\n" + Descripcion_corta;
-  fs.writeFileSync(Titulo + ".md", ExportarD, function(err, file) {
+  var ExportarD = "---\n" + yaml.safeDump(Exportar) + "---";
+
+  if (Data.texto_np != null) {
+    var Descripcion_corta = Data.texto_np;
+    ExportarD = ExportarD + "\n\n" + Descripcion_corta
+  }
+  fs.writeFileSync("1.Guion/" + Titulo + ".md", ExportarD, function(err, file) {
     if (err) throw err;
     console.log("Saved!");
   });
