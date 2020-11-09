@@ -75,9 +75,7 @@ function CargarData(Direcion) {
     try {
       let Link = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
       Data.links = []
-
       Link.forEach(LinkTmp => {
-        // console.log(LinkTmp);
         Data.links.push({
           "title": LinkTmp.Titulo,
           "url": LinkTmp.URL
@@ -98,8 +96,11 @@ function CargarData(Direcion) {
     }
     try {
       let DataPiezas = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Piesas.md', 'utf8'));
-      Object.assign(Data, {
-        'Piesas': DataPiezas
+      Data.Piesas = []
+      DataPiezas.forEach(PiesasTmp => {
+        Data.Piesas.push({
+          "title": PiesasTmp
+        });
       });
     } catch (e) {
       console.log("No encontrada Piezas");
