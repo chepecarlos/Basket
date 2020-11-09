@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/*jshint esversion: 6 */
+/*jshint esversion: 8 */
 
 // https://www.npmjs.com/package/yaml
 const yaml = require('js-yaml');
@@ -8,7 +8,6 @@ let fs = require('fs');
 let fsExtra = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
 const yargs = require("yargs");
-// const child_process = require('child_process');
 
 var Contastes = require('./Token');
 
@@ -129,7 +128,7 @@ function CrearArchivoNP(Folder) {
   if (Data.links != null) {
     Exportar.links = Data.links;
   }
-  if (Data.Piesas != null ){
+  if (Data.Piesas != null) {
     Exportar.piezas = Data.Piesas;
   }
 
@@ -277,11 +276,15 @@ function Trasformando60(Archivo) {
   });
 }
 
+function ActualizarDescripcion() {
+  console.log("Actualizando Descripcion");
+}
+
 const opciones = yargs
   .command(
     'Heramientas para produccion contenido de ALSW'
   )
-  .example('$0 -p .', 'Crea proxy dentro del folder actual')
+  // .example('$0 -p .', 'Crea proxy dentro del folder actual')
   .option("f", {
     alias: "folder",
     describe: "crea folde de proyecto",
@@ -310,6 +313,10 @@ const opciones = yargs
     describe: "crea archivo de youtube",
     type: "string"
   })
+  .option("d", {
+    alias: "descripcion",
+    describe: "actualizacion descripcion de video Youtube"
+  })
   .help('h')
   .alias('h', 'help')
   .argv;
@@ -337,6 +344,9 @@ function main() {
     CrearArchivoNP(opciones.nocheprogramacion);
   } else if (opciones.youtube) {
     CrearArchivoYT(opciones.youtube);
+  } else if (opciones.descripcion) {
+    console.log("Actualizacion de Descripcion de Youtube");
+    ActualizarDescripcion();
   } else {
     console.log("sin opciones usar -h para opciones");
   }
