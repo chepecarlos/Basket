@@ -4,7 +4,7 @@ Scrip para **automatizar** procesos de youtube, noche de programación y cració
 
 ## Estructura de folder de proyectos
 
-``` 
+```
 1.Guion
 2.TomaA
 3.TomaB
@@ -14,30 +14,52 @@ Scrip para **automatizar** procesos de youtube, noche de programación y cració
 7.Miniatura
 8.Gif
 ```
- 
-### 1.Guión 
-Documentación o metadata que se usara para noche de programación y videos de youtube 
+
+### 1.Guión
+Documentación o metadata que se usara para noche de programación y videos de youtube
 
 #### Estructura de archivos de 1.Guión
 
 ```
-1.Info,md
+1.Info.md
 2.SEO.md
 3.Texto.md
 4.Indice.md
 5.Link.md
 6.Piezas.md
 ```
-#### Estructura del archivo 1.Info
+#### Estructura del archivo 1.Info.md
 
-```
+Valores **obligatorios**
+```Markdown
 ---
 titulo: Titulo Video
 id: 000
 fecha: 2020-12-24
 youtube_id: ID_Youtube
+
+```
+
+donde:
+* **titulo** del video
+* **id** video del tutorial o curso o streaming
+* **fecha**  de publicacion de youtube
+* **youtube_id** id del video de youtube (Ejemplo video https://youtu.be/PqzgYv7lpl0  el id es **PqzgYv7lpl0**)
+
+valores **Opciones**
+
+```Markdown
+titulo_np: Titulo NocheProgramacion
+id_Curso: 1
 codigo: Codigo
 ```
+
+donde:
+* **titulo_np** titulo para nocheprogramacion
+* **id_Curso** ID del curso que pertenece el video
+* **codigo** directorio donde este el codigo del proyecto
+
+
 ### 2.TomaA
 Tomas principales del video casi siempre las de OBS
 

@@ -5,6 +5,7 @@
 // https://www.npmjs.com/package/yaml
 const yaml = require('js-yaml');
 let fs = require('fs');
+const path = require('path');
 let fsExtra = require('fs-extra');
 const TelegramBot = require('node-telegram-bot-api');
 const yargs = require("yargs");
@@ -15,13 +16,18 @@ const bot = new TelegramBot(Contastes.token, {
   polling: false
 });
 
+const HomeDirector = require('os').homedir();
+
 function ObtenerTitulo(Data) {
   let Titulo = Data.titulo;
+  if(Data.titulo_np != null){
+    Titulo = Data.titulo_np;
+  }
   // TODO id con tres digitos
   let Indice = Data.id;
   Titulo = Titulo.replace(/ /g, "_");
   if (Data.id_Curso != null) {
-    Indice = Data.id_Curso + "." + Indice
+    Indice = Data.id_Curso + "." + Indice;
   }
   Titulo = Indice + "_" + Titulo;
   return Titulo;
@@ -52,66 +58,85 @@ function CargarIndice(Direcion) {
 }
 
 
-function CargarData(Direcion) {
+function CargarArchivoYAML(Archivo) {
   try {
-
-    let Data = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/InfoProyecto.md', 'utf8'));
-
-    let TextoExtra = yaml.safeLoad(fs.readFileSync(__dirname + '/Data/TextoExtra.md', 'utf8'));
-    Object.assign(Data, TextoExtra);
-
-    let TextoParaCompartir = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/TextoParaCompartir.md', 'utf8'));
-    Object.assign(Data, TextoParaCompartir);
-
-    try {
-      let Indice = CargarIndice(Direcion + '/1.Guion/Indice.md');
-      Object.assign(Data, {
-        'topics': Indice
-      });
-    } catch (e) {
-      console.log("No encontrado Indice.md");
-    }
-
-    try {
-      let Link = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Link.md', 'utf8'));
-      Data.links = []
-      Link.forEach(LinkTmp => {
-        Data.links.push({
-          "title": LinkTmp.Titulo,
-          "url": LinkTmp.URL
-        });
-      });
-    } catch (ex) {
-      console.log("No Encontrado Link.md");
-    }
-
-    try {
-      let DataLink = yaml.safeLoad(fs.readFileSync(__dirname + '/Data/link.md', 'utf8'));
-      Object.assign(Data, {
-        'DataLink': DataLink
-      });
-    } catch (ex) {
-      // Show error
-      console.log(ex);
-    }
-    try {
-      let DataPiezas = yaml.safeLoad(fs.readFileSync(Direcion + '/1.Guion/Piesas.md', 'utf8'));
-      Data.Piesas = []
-      DataPiezas.forEach(PiesasTmp => {
-        Data.Piesas.push({
-          "title": PiesasTmp
-        });
-      });
-    } catch (e) {
-      console.log("No encontrada Piezas");
-    } finally {
-
-    }
-    console.log(Data);
+    let Data = yaml.safeLoad(fs.readFileSync(Archivo, 'utf8'));
     return Data;
   } catch (e) {
-    // Todo: Error mas bonito
-    console.log(e);
+    console.log("No encontrado " + Archivo);
+    return null;
+  }
+}
+
+function CargarData(Direcion) {
+
+  let Data = CargarArchivoYAML(Direcion + '/1.Guion/1.Info.md');
+
+  let SEO = CargarArchivoYAML(Direcion + '/1.Guion/2.SEO.md');
+  Object.assign(Data, SEO);
+
+  let Texto = CargarArchivoYAML(Direcion + '/1.Guion/3.Texto.md');
+  Object.assign(Data, Texto);
+
+  try {
+    let Indice = CargarIndice(Direcion + '/1.Guion/4.Indice.md');
+    Object.assign(Data, {
+      'topics': Indice
+    });
+  } catch (e) {
+    console.log("No encontrado /1.Guion/4.Indice.md");
+  }
+
+  let Link = CargarArchivoYAML(Direcion + '/1.Guion/5.Link.md');
+  if (Link != null) {
+    Data.links = [];
+    Link.forEach(LinkTmp => {
+      Data.links.push({
+        "title": LinkTmp.Titulo,
+        "url": LinkTmp.URL
+      });
+    });
+  }
+
+  let DataPiezas = CargarArchivoYAML(Direcion + '/1.Guion/6.Piesas.md');
+  if (DataPiezas != null) {
+    Data.Piesas = [];
+    DataPiezas.forEach(PiesasTmp => {
+      Data.Piesas.push({
+        "title": PiesasTmp
+      });
+    });
+  }
+
+
+  let DataInfo = CargarArchivoYAML(__dirname + '/Data/1.info.md');
+  if (DataInfo != null) {
+    Object.assign(Data, {
+      'DataIndo': DataInfo
+    });
+  }
+
+  let DataLink = CargarArchivoYAML(__dirname + '/Data/2.link.md');
+  if (DataLink != null) {
+    Object.assign(Data, {
+      'DataLink': DataLink
+    });
+  }
+
+  // let TextoExtra = CargarArchivoYAML(__dirname + '/Data/TextoExtra.md');
+  // Object.assign(Data, TextoExtra);
+  // console.log(Data);
+  return Data;
+
+}
+
+function BuscarFolderCon(directorio, texto) {
+  let archivos = fs.readdirSync(directorio);
+  for (var archivo of archivos) {
+    if (archivo.match(texto + "_")) {
+      console.log(archivo);
+      return archivo;
+    }
   }
 }
 
@@ -145,23 +170,42 @@ function CrearArchivoNP(Folder) {
 
   if (Data.texto_np != null) {
     var Descripcion_corta = Data.texto_np;
-    ExportarD = ExportarD + "\n\n" + Descripcion_corta
+    ExportarD = ExportarD + "\n\n" + Descripcion_corta;
   }
   fs.writeFileSync("1.Guion/" + Titulo + ".md", ExportarD, function(err, file) {
+    if (err) throw err;
+    console.log("Saved!");
+  });
+  let DirecionArchivos = HomeDirector + "/" + Data.DataIndo.nocheprogramacion;
+  if (Data.id_Curso != null) {
+    DirecionArchivos += "/_Cursos";
+    let FolderFolder = BuscarFolderCon(DirecionArchivos, Data.id_Curso);
+    DirecionArchivos += "/" + FolderFolder;
+  } else {
+    DirecionArchivos += "/_Tutoriales";
+  }
+
+  fs.writeFileSync(DirecionArchivos + "/" + Titulo + ".md", ExportarD, function(err, file) {
     if (err) throw err;
     console.log("Saved!");
   });
 }
 
 function CrearArchivoYT(Folder) {
-  if (Folder == null) {
+  if (Folder != null) {
     Folder = ".";
   }
   var Data = CargarData(Folder);
   var Titulo = ObtenerTitulo(Data);
   var DataYT = "";
-  DataYT += Data.texto.texto + "\n\n";
+  DataYT += Data.texto_yt + "\n\n";
+  if (Data.texto_yt_extra != null) {
+    DataYT += Data.texto_yt_extra;
+  }
+
+
   DataYT += "Link Referencia:\n" + Data.texto.link_np + "\n\n";
+
 
   if (Data.indice != null) {
     if (Data.indice.length > 0) {
@@ -324,8 +368,7 @@ const opciones = yargs
   })
   .option("y", {
     alias: "youtube",
-    describe: "crea archivo de youtube",
-    type: "string"
+    describe: "crea archivo de youtube"
   })
   .option("d", {
     alias: "descripcion",
