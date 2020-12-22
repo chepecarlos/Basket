@@ -20,7 +20,7 @@ const HomeDirector = require('os').homedir();
 
 function ObtenerTitulo(Data) {
   let Titulo = Data.titulo;
-  if(Data.titulo_np != null){
+  if (Data.titulo_np != null) {
     Titulo = Data.titulo_np;
   }
   // TODO id con tres digitos
@@ -176,6 +176,7 @@ function CrearArchivoNP(Folder) {
     if (err) throw err;
     console.log("Saved!");
   });
+
   let DirecionArchivos = HomeDirector + "/" + Data.DataIndo.nocheprogramacion;
   if (Data.id_Curso != null) {
     DirecionArchivos += "/_Cursos";
@@ -305,9 +306,12 @@ function RenderVideo(Archivo) {
 }
 
 function Trasformando60(Archivo) {
-  var Parte = Archivo.split(".");
-  var Archivo60 = Parte[0] + "_60fps." + Parte[1];
+  var PosicionPulto = Archivo.lastIndexOf(".");
+  var Nombre = Archivo.slice(0, PosicionPulto);
+  var Formato = Archivo.slice(PosicionPulto + 1, Archivo.length);
+  var Archivo60 = Nombre + "_60fps." + Formato;
   var Comando = "ffmpeg -i " + Archivo + " -r 60 " + Archivo60;
+
   bot.sendMessage(Contastes.IDChat, "[ffmpeg] Trasformando a 60fps: " + Archivo);
   let Inicio = new Date();
   const {
