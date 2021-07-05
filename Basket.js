@@ -20,7 +20,7 @@ const HomeDirector = require('os').homedir();
 
 function ObtenerTitulo(Data) {
   let Titulo = Data.titulo;
-  if(Data.titulo_np != null){
+  if (Data.titulo_np != null) {
     Titulo = Data.titulo_np;
   }
   // TODO id con tres digitos
@@ -374,6 +374,10 @@ const opciones = yargs
     alias: "descripcion",
     describe: "actualizacion descripcion de video Youtube"
   })
+  .option("m", {
+    alias: "mp3",
+    describe: "Descargar archivo mp3 de youtube"
+  })
   .help('h')
   .alias('h', 'help')
   .argv;
@@ -404,6 +408,9 @@ function main() {
   } else if (opciones.descripcion) {
     console.log("Actualizacion de Descripcion de Youtube");
     ActualizarDescripcion();
+  } else if (opciones.mp3) {
+    console.log("Descargando audio de Youtube");
+    // youtube-dl -x --audio-format mp3
   } else {
     console.log("sin opciones usar -h para opciones");
   }
