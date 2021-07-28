@@ -74,7 +74,7 @@ def SuvirVideo(Archivo):
     if not Archivo.endswith(".mp4"):
         Archivo += ".mp4"
 
-    EnviarMensaje("<b>Empezar</b> a subir video a Youtubede " + Archivo)
+    EnviarMensaje("<b>Empezar</b> a subir video a YouTube - " + Archivo)
 
     Inicio = time.time()
     comando = ['tooltube.py', "-u", "-f", Archivo]
@@ -85,7 +85,7 @@ def SuvirVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Se suvio el video {Tiempo} {Archivo}")
-        EnviarMensaje("<b>Finalizo</b> video subido en youtube " + Tiempo + " - " + Archivo)
+        EnviarMensaje("Video <b>Suvido</b> a Youtube " + Archivo +  " Tardo: " + Tiempo)
         return True
     else:
         logger.info(f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo} ")
