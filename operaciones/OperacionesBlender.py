@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 ConfigurarLogging(logger)
 
 def CrearProxy(Directorio):
-    global IDChat
     EnviarMensaje("<b>Empezar</b> a crear Proxy de " + Directorio)
 
     Inicio = time.time()
@@ -24,17 +23,19 @@ def CrearProxy(Directorio):
     Tiempo = round(Final - Inicio)
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
-        logging.info(f"Finalizo creacion de proxy {Tiempo} {Directorio}")
+        logger.info(f"Finalizo creacion de proxy {Tiempo} {Directorio}")
         EnviarMensaje("<b>Finalizo</b> creacion de proxy " + Tiempo + " - " + Directorio)
     else:
-        logging.warning(f"ERROR {EstadoPreceso} creacion de proxy {Tiempo} {Directorio} ")
+        logger.warning(f"ERROR {EstadoPreceso} creacion de proxy {Tiempo} {Directorio} ")
         EnviarMensaje("<b>ERROR</b> " + EstadoPreceso + "creacion de proxy" + Tiempo + " - " + Directorio)
 
 
 def RenderizarVideo(Archivo):
-    global IDChat
-    EnviarMensaje("Empezar a <b>Rendizar Video</b> " + Archivo)
-    Imprimir(Archivo)
+    if not Archivo.endswith(".blend"):
+        Archivo += ".blend"
+    EnviarMensaje(f"Empezar a <b>Rendizar Video</b> {Archivo}")
+    logger.info(f"Empezar a <b>Rendizar Video</b> {Archivo}")
+
     Inicio = time.time()
     comando = ['bpsrender', Archivo]
     EstadoPreceso = EmpezarSubProceso(comando)
@@ -43,26 +44,51 @@ def RenderizarVideo(Archivo):
     Tiempo = round(Final - Inicio)
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
-        Imprimir(f"Finalizo la renderizacion {Tiempo} {Archivo}")
+        logger.info(f"Finalizo la renderizacion {Tiempo} {Archivo}")
         EnviarMensaje("<b>Finalizo</b> la renderizacion " + Tiempo + " - " + Archivo)
+        return True
     else:
-        Imprimir(f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
+        logger.info(f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
         EnviarMensaje("<b>ERROR</b> " + EstadoPreceso + "la renderizacion" + Tiempo + " - " + Archivo)
 
+    return False
 
 def BorrarTemporalesBender(Directorio):
-    # TODO: no entrar en folder ocultos
-    Imprimir(f"Emezando a borrar {Directorio}")
+    """Borrar Archivos Temprales de Edicion de video en Blender."""
+    logger.info(f"Emezando a borrar {Directorio}")
 
     Ruta_Actual = os.getcwd()
     num_directorios = 0
-    linea = '-' * 60
 
     for ruta, directorios, archivos in os.walk(Ruta_Actual, topdown=True):
         for directorio in directorios:
             if(directorio == Directorio):
                 num_directorios += 1
-                Imprimir(f"Borrar {ruta} {directorio}")
+                logger.info(f"Borrando {ruta}/{directorio}")
                 shutil.rmtree(os.path.join(ruta, directorio))
-    Imprimir(linea)
-    Imprimir(f'Cantidad de folder {Directorio} eliminados: {num_directorios}')
+    logger.info(f'Borrado {num_directorios} de {Directorio}')
+
+
+def SuvirVideo(Archivo):
+    """Sube video a Youtube."""
+    if not Archivo.endswith(".mp4"):
+        Archivo += ".mp4"
+
+    EnviarMensaje("<b>Empezar</b> a subir video a Youtubede " + Archivo)
+
+    Inicio = time.time()
+    comando = ['tooltube.py', "-u", "-f", Archivo]
+    EstadoPreceso = EmpezarSubProceso(comando)
+
+    Final = time.time()
+    Tiempo = round(Final - Inicio)
+    Tiempo = str(datetime.timedelta(seconds=Tiempo))
+    if EstadoPreceso == 0:
+        logger.info(f"Se suvio el video {Tiempo} {Archivo}")
+        EnviarMensaje("<b>Finalizo</b> video subido en youtube " + Tiempo + " - " + Archivo)
+        return True
+    else:
+        logger.info(f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo} ")
+        EnviarMensaje("<b>ERROR</b> " + EstadoPreceso + "no se puedo subir el video" + Tiempo + " - " + Archivo)
+
+    return False
