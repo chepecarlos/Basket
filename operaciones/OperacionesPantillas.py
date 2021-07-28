@@ -12,9 +12,10 @@ def CrearFolderVideo(NombreFolder):
     except OSError as err:
         print("Error: % s" % err)
 
+
 def CrearArticulo(NombreArticulo):
     """Copia Articulo Base a directorio actual."""
-    ArticuloBase = "/home/chepecarlos/1.Proyectos/1.Oficial/1.NocheProgramacion/assets/template/video.md"
+    ArticuloBase = "/home/chepecarlos/1.Proyectos/1.Oficiales/1.NocheProgramacion/assets/template/video.md"
     NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
     try:
         shutil.copy2(ArticuloBase, NuevoArticulo)
