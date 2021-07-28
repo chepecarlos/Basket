@@ -6,7 +6,7 @@ import argparse
 import os
 
 from operaciones.IconoFolder import ActualizarIconoFolder
-from operaciones.OperacionesFolder import CrearFolderVideo
+from operaciones.OperacionesPantillas import CrearFolderVideo, CrearArticulo
 from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
 
 from extra.FuncionesLogging import ConfigurarLogging
@@ -20,7 +20,8 @@ parser.add_argument('--blenderproxy', '-bp', help="Creando proxy de Blender", ac
 parser.add_argument('--blenderrenderizar', '-br', help="Crea el video Final", action="store_true")
 parser.add_argument('--blenderborrar', '-bb', help="Borrar Temporales", action="store_true")
 parser.add_argument('--blendercompleto', '-bc', help="Renderiza video y sube a youtube", action="store_true")
-parser.add_argument('--proyectovideo', '-pv', help="Crear Folder proyecto de Video")
+parser.add_argument('--proyectovideo', '-p', help="Crear Folder proyecto de Video")
+parser.add_argument('--proyectoarticulo', '-a', help="Crear articulo base")
 parser.add_argument('--file', '-f', help="Archivo trabajar")
 
 if __name__ == "__main__":
@@ -51,5 +52,8 @@ if __name__ == "__main__":
     elif args.proyectovideo:
         print(f"Nombre del folder {args.proyectovideo}")
         CrearFolderVideo(args.proyectovideo)
+    elif args.proyectoarticulo:
+        print(f"Nombre del Archivo {args.proyectoarticulo}")
+        CrearArticulo(args.proyectoarticulo)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
