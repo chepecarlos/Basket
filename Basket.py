@@ -6,7 +6,7 @@ import argparse
 import os
 
 from operaciones.IconoFolder import ActualizarIconoFolder
-from operaciones.OperacionesBlender import CrearProxy
+from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
 
 from extra.FuncionesLogging import ConfigurarLogging
 
@@ -16,6 +16,9 @@ ConfigurarLogging(logger)
 parser = argparse.ArgumentParser(description='Heramienta Asignar iconos a folder')
 parser.add_argument('--icono', '-i', help="Actualizar Icono a folder gtk")
 parser.add_argument('--blenderproxy', '-bp', help="Creando proxy de Blender", action="store_true")
+parser.add_argument('--blenderrenderizar', '-br', help="Crea el video Final", action="store_true")
+parser.add_argument('--blenderborrar', '-bb', help="Borrar Temporales", action="store_true")
+parser.add_argument('--blendercompleto', '-bc', help="Renderiza video y sube a youtube", action="store_true")
 
 parser.add_argument('--file', '-f', help="Archivo trabajar")
 
@@ -28,8 +31,21 @@ if __name__ == "__main__":
             ActualizarIconoFolder(args.file)
         else:
             ActualizarIconoFolder()
+    elif args.blendercompleto:
+        if args.file:
+            VideoTerminado = RenderizarVideo(args.file)
+            if VideoTerminado:
+                VideoSuvido = SuvirVideo(args.file)
     elif args.blenderproxy:
-        print("Empezando a crear proxy")
+        logger.info("Empezando a crear proxy")
         CrearProxy(os.getcwd())
+    elif args.blenderrenderizar:
+        logger.info("Empezando a Renderizar video")
+        if args.file:
+            RenderizarVideo(args.file)
+    elif args.blenderborrar:
+        logger.info("Borrar temporales de Blender")
+        BorrarTemporalesBender('BL_proxy')
+        BorrarTemporalesBender('bpsrender')
     else:
-        print("Opcion no encontrada, lee documentacion con -h")
+        logger.info("Opcion no encontrada, lee documentacion con -h")
