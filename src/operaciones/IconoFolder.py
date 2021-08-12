@@ -1,8 +1,10 @@
 import os
 
 
-def ActualizarIconoFolder(Icono=".icono.png"):
+def ActualizarIconoFolder(Icono=None):
     """Asignar un icono a folder recursicamente para gtk."""
+    if Icono is None:
+        Icono=".icono.png"
     cantidad = 0
 
     FolderIgnorar = [".git", "venv", "node_modules", "BL_proxy", "bpsrender"]
