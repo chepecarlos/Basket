@@ -13,7 +13,7 @@ def main():
     ConfigurarLogging(logger)
 
     parser = argparse.ArgumentParser(description='Heramientas Automatizacion de ALSW')
-    parser.add_argument('--icono', '-i', help="Actualizar Icono a folder gtk")
+    parser.add_argument('--icono', '-i', help="Actualizar Icono a folder gtk", action="store_true")
     parser.add_argument('--blender_proxy', '-bp', help="Creando proxy de Blender", action="store_true")
     parser.add_argument('--blender_renderizar', '-br', help="Renderizar video con Blender", action="store_true")
     parser.add_argument('--blender_borrar', '-bb', help="Borrar Temporales de Blender", action="store_true")
@@ -23,12 +23,8 @@ def main():
     parser.add_argument('--file', '-f', help="Archivo trabajar")
 
     args = parser.parse_args()
-    print(args)
     if args.icono:
-        if args.file:
-            ActualizarIconoFolder(args.file)
-        else:
-            ActualizarIconoFolder()
+        ActualizarIconoFolder(args.file)
     elif args.blender_completo:
         if args.file:
             VideoTerminado = RenderizarVideo(args.file)
