@@ -5,7 +5,7 @@ import os
 from MiLogging.MiLogging import ConfigurarLogging
 
 from operaciones.IconoFolder import ActualizarIconoFolder
-from operaciones.OperacionesPantillas import CrearFolderVideo, CrearArticulo
+from operaciones.Pantillas import CrearFolderVideo, CrearArticulo
 from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
 
 def main():
