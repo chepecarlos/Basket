@@ -2,14 +2,14 @@ import logging
 import argparse
 import os
 
-import MisFunciones
+import MiLibrerias
 
 from operaciones.IconoFolder import ActualizarIconoFolder
 from operaciones.Pantillas import CrearFolderVideo, CrearArticulo
 from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
 
 def main():
-    logger = MisFunciones.ConfigurarLogging(__name__)
+    logger = MiLibrerias.ConfigurarLogging(__name__)
 
     parser = argparse.ArgumentParser(description='Heramientas Automatizacion de ALSW')
     parser.add_argument('--icono', '-i', help="Actualizar Icono a folder gtk", action="store_true")

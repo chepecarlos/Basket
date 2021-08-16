@@ -5,11 +5,11 @@ import os
 import shutil
 import logging
 
-import MisFunciones
-logger = MisFunciones.ConfigurarLogging(__name__)
+import MiLibrerias
+logger = MiLibrerias.ConfigurarLogging(__name__)
 
 def CrearProxy(Directorio):
-    MisFunciones.EnviarMensajeTelegram(
+    MiLibrerias.EnviarMensajeTelegram(
         f"<b>Empezar</b> a crear Proxy de {Directorio}")
 
     Inicio = time.time()
@@ -21,19 +21,19 @@ def CrearProxy(Directorio):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo creacion de proxy {Tiempo} {Directorio}")
-        MisFunciones.EnviarMensajeTelegram(
+        MiLibrerias.EnviarMensajeTelegram(
             f"<b>Finalizo</b> creacion de proxy {Tiempo} - {Directorio}")
     else:
         logger.warning(
             f"ERROR {EstadoPreceso} creacion de proxy {Tiempo} {Directorio} ")
-        MisFunciones.EnviarMensajeTelegram(
+        MiLibrerias.EnviarMensajeTelegram(
             f"<b>ERROR</b> {EstadoPreceso} creacion de proxy {Tiempo} - {Directorio}")
 
 
 def RenderizarVideo(Archivo):
     if not Archivo.endswith(".blend"):
         Archivo += ".blend"
-    MisFunciones.EnviarMensajeTelegram(
+    MiLibrerias.EnviarMensajeTelegram(
         f"Empezar a <b>Rendizar Video</b> {Archivo}")
     logger.info(f"Empezar a <b>Rendizar Video</b> {Archivo}")
 
@@ -46,13 +46,13 @@ def RenderizarVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo la renderizacion {Tiempo} {Archivo}")
-        MisFunciones.EnviarMensajeTelegram(
+        MiLibrerias.EnviarMensajeTelegram(
             f"<b>Finalizo</b> la renderizacion " + Tiempo + " - " + Archivo)
         return True
     else:
         logger.info(
             f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
-        MisFunciones.EnviarMensajeTelegram(
+        MiLibrerias.EnviarMensajeTelegram(
             f"<b>ERROR</b> {EstadoPreceso} la renderizacion {Tiempo} - {Archivo}")
 
     return False
@@ -79,7 +79,7 @@ def SuvirVideo(Archivo):
     if not Archivo.endswith(".mp4"):
         Archivo += ".mp4"
 
-    MisFunciones.EnviarMensajeTelegram(
+    MiLibrerias.EnviarMensajeTelegram(
         f"<b>Empezar</b> a subir video a YouTube - {Archivo}")
 
     Inicio = time.time()
@@ -91,13 +91,13 @@ def SuvirVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Se suvio el video {Tiempo} {Archivo}")
-        MisFunciones.EnviarMensajeTelegram(
+        MiLibrerias.EnviarMensajeTelegram(
             f"Video <b>Suvido</b> a Youtube {Archivo} Tardo: { Tiempo}")
         return True
     else:
         logger.info(
             f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo}")
-        MisFunciones.EnviarMensajeTelegram(
+        MiLibrerias.EnviarMensajeTelegram(
             f"<b>ERROR</b> {EstadoPreceso} no se puedo subir el video {Tiempo} - {Archivo}")
 
     return False

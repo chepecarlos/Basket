@@ -1,14 +1,14 @@
 import shutil
 import os
 
-import MisFunciones
+import MiLibrerias
 
-logger = MisFunciones.ConfigurarLogging(__name__)
+logger = MiLibrerias.ConfigurarLogging(__name__)
 
 def CrearFolderVideo(NombreFolder):
     """Copia Folder Base de proyectos a directorio actual."""
     NombreFolder = NombreSinEspacios(NombreFolder)
-    FolderBase = MisFunciones.ObtenerValor("data/Plantilla.json", "ProyectoEjemplo")
+    FolderBase = MiLibrerias.ObtenerValor("data/Plantilla.json", "ProyectoEjemplo")
     if FolderBase is not None:
         NuevoFolder = os.path.join(os.getcwd(), NombreFolder)
         try:
@@ -21,7 +21,7 @@ def CrearFolderVideo(NombreFolder):
 def CrearArticulo(NombreArticulo):
     """Copia Articulo Base a directorio actual."""
     NombreArticulo = NombreSinEspacios(NombreArticulo)
-    ArticuloBase = MisFunciones.ObtenerValor("data/Plantilla.json", "ArticuloBase")
+    ArticuloBase = MiLibrerias.ObtenerValor("data/Plantilla.json", "ArticuloBase")
     if ArticuloBase is not None:
         NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
         try:

@@ -1,8 +1,8 @@
 import os
 
-import MisFunciones
+import MiLibrerias
 
-logger = MisFunciones.ConfigurarLogging(__name__)
+logger = MiLibrerias.ConfigurarLogging(__name__)
 
 def ActualizarIconoFolder(Icono=None):
     """Asignar un icono a folder recursicamente para gtk."""
