@@ -1,5 +1,3 @@
-from extra.MiCharBot import EnviarMensaje
-# from Extra.Depuracion import Imprimir
 from extra.SubProceso import EmpezarSubProceso
 import time
 import datetime
@@ -7,14 +5,12 @@ import os
 import shutil
 import logging
 
-
-from MiLogging.MiLogging import ConfigurarLogging
-
-logger = logging.getLogger(__name__)
-ConfigurarLogging(logger)
+import MisFunciones
+logger = MisFunciones.ConfigurarLogging(__name__)
 
 def CrearProxy(Directorio):
-    EnviarMensaje("<b>Empezar</b> a crear Proxy de " + Directorio)
+    MisFunciones.EnviarMensajeTelegram(
+        f"<b>Empezar</b> a crear Proxy de {Directorio}")
 
     Inicio = time.time()
     comando = ['bpsproxy']
@@ -25,16 +21,20 @@ def CrearProxy(Directorio):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo creacion de proxy {Tiempo} {Directorio}")
-        EnviarMensaje("<b>Finalizo</b> creacion de proxy " + Tiempo + " - " + Directorio)
+        MisFunciones.EnviarMensajeTelegram(
+            f"<b>Finalizo</b> creacion de proxy {Tiempo} - {Directorio}")
     else:
-        logger.warning(f"ERROR {EstadoPreceso} creacion de proxy {Tiempo} {Directorio} ")
-        EnviarMensaje("<b>ERROR</b> " + EstadoPreceso + "creacion de proxy" + Tiempo + " - " + Directorio)
+        logger.warning(
+            f"ERROR {EstadoPreceso} creacion de proxy {Tiempo} {Directorio} ")
+        MisFunciones.EnviarMensajeTelegram(
+            f"<b>ERROR</b> {EstadoPreceso} creacion de proxy {Tiempo} - {Directorio}")
 
 
 def RenderizarVideo(Archivo):
     if not Archivo.endswith(".blend"):
         Archivo += ".blend"
-    EnviarMensaje(f"Empezar a <b>Rendizar Video</b> {Archivo}")
+    MisFunciones.EnviarMensajeTelegram(
+        f"Empezar a <b>Rendizar Video</b> {Archivo}")
     logger.info(f"Empezar a <b>Rendizar Video</b> {Archivo}")
 
     Inicio = time.time()
@@ -46,13 +46,17 @@ def RenderizarVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo la renderizacion {Tiempo} {Archivo}")
-        EnviarMensaje("<b>Finalizo</b> la renderizacion " + Tiempo + " - " + Archivo)
+        MisFunciones.EnviarMensajeTelegram(
+            f"<b>Finalizo</b> la renderizacion " + Tiempo + " - " + Archivo)
         return True
     else:
-        logger.info(f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
-        EnviarMensaje("<b>ERROR</b> " + EstadoPreceso + "la renderizacion" + Tiempo + " - " + Archivo)
+        logger.info(
+            f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
+        MisFunciones.EnviarMensajeTelegram(
+            f"<b>ERROR</b> {EstadoPreceso} la renderizacion {Tiempo} - {Archivo}")
 
     return False
+
 
 def BorrarTemporalesBender(Directorio):
     """Borrar Archivos Temprales de Edicion de video en Blender."""
@@ -75,7 +79,8 @@ def SuvirVideo(Archivo):
     if not Archivo.endswith(".mp4"):
         Archivo += ".mp4"
 
-    EnviarMensaje("<b>Empezar</b> a subir video a YouTube - " + Archivo)
+    MisFunciones.EnviarMensajeTelegram(
+        f"<b>Empezar</b> a subir video a YouTube - {Archivo}")
 
     Inicio = time.time()
     comando = ['tooltube.py', "-u", "-f", Archivo]
@@ -86,10 +91,13 @@ def SuvirVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Se suvio el video {Tiempo} {Archivo}")
-        EnviarMensaje("Video <b>Suvido</b> a Youtube " + Archivo +  " Tardo: " + Tiempo)
+        MisFunciones.EnviarMensajeTelegram(
+            f"Video <b>Suvido</b> a Youtube {Archivo} Tardo: { Tiempo}")
         return True
     else:
-        logger.info(f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo} ")
-        EnviarMensaje("<b>ERROR</b> " + EstadoPreceso + "no se puedo subir el video" + Tiempo + " - " + Archivo)
+        logger.info(
+            f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo}")
+        MisFunciones.EnviarMensajeTelegram(
+            f"<b>ERROR</b> {EstadoPreceso} no se puedo subir el video {Tiempo} - {Archivo}")
 
     return False

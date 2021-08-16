@@ -2,15 +2,14 @@ import logging
 import argparse
 import os
 
-from MiLogging.MiLogging import ConfigurarLogging
+import MisFunciones
 
 from operaciones.IconoFolder import ActualizarIconoFolder
 from operaciones.Pantillas import CrearFolderVideo, CrearArticulo
 from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
 
 def main():
-    logger = logging.getLogger(__name__)
-    ConfigurarLogging(logger)
+    logger = MisFunciones.ConfigurarLogging(__name__)
 
     parser = argparse.ArgumentParser(description='Heramientas Automatizacion de ALSW')
     parser.add_argument('--icono', '-i', help="Actualizar Icono a folder gtk", action="store_true")
@@ -42,10 +41,10 @@ def main():
         BorrarTemporalesBender('BL_proxy')
         BorrarTemporalesBender('bpsrender')
     elif args.proyectovideo:
-        print(f"Nombre del folder {args.proyectovideo}")
+        logger.info(f"Nombre del folder {args.proyectovideo}")
         CrearFolderVideo(args.proyectovideo)
     elif args.proyectoarticulo:
-        print(f"Nombre del Archivo {args.proyectoarticulo}")
+        logger.info(f"Nombre del Archivo {args.proyectoarticulo}")
         CrearArticulo(args.proyectoarticulo)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
