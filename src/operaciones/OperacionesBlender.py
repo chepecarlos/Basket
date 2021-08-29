@@ -83,7 +83,7 @@ def SuvirVideo(Archivo):
         f"<b>Empezar</b> a subir video a YouTube - {Archivo}")
 
     Inicio = time.time()
-    comando = ['tooltube.py', "-u", "-f", Archivo]
+    comando = ['tooltube', "-u", "-f", Archivo]
     EstadoPreceso = EmpezarSubProceso(comando)
 
     Final = time.time()
