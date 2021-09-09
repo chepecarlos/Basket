@@ -1,24 +1,40 @@
-import logging
 import argparse
 import os
 
 import MiLibrerias
 
+from pathlib import Path
+
 from operaciones.IconoFolder import ActualizarIconoFolder
 from operaciones.Pantillas import CrearFolderVideo, CrearArticulo
 from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
+from operaciones.Video import ConvertirVideo
+
 
 def main():
     logger = MiLibrerias.ConfigurarLogging(__name__)
 
-    parser = argparse.ArgumentParser(description='Heramientas Automatizacion de ALSW')
-    parser.add_argument('--icono', '-i', help="Actualizar Icono a folder gtk", action="store_true")
-    parser.add_argument('--blender_proxy', '-bp', help="Creando proxy de Blender", action="store_true")
-    parser.add_argument('--blender_renderizar', '-br', help="Renderizar video con Blender", action="store_true")
-    parser.add_argument('--blender_borrar', '-bb', help="Borrar Temporales de Blender", action="store_true")
-    parser.add_argument('--blender_completo', '-bc', help="Renderiza video Blender y sube a youtube", action="store_true")
-    parser.add_argument('--proyectovideo', '-p', help="Crear Folder proyecto de Video")
+    parser = argparse.ArgumentParser(
+        description='Heramientas Automatizacion de ALSW')
+    parser.add_argument(
+        '--icono', '-i', help="Actualizar Icono a folder gtk", action="store_true")
+
+    parser.add_argument('--blender_proxy', '-bp',
+                        help="Creando proxy de Blender", action="store_true")
+    parser.add_argument('--blender_renderizar', '-br',
+                        help="Renderizar video con Blender", action="store_true")
+    parser.add_argument('--blender_borrar', '-bb',
+                        help="Borrar Temporales de Blender", action="store_true")
+    parser.add_argument('--blender_completo', '-bc',
+                        help="Renderiza video Blender y sube a youtube", action="store_true")
+
+    parser.add_argument(
+        '--video', '-v', help="Convertir video a 60 fps", action="store_true")
+
+    parser.add_argument('--proyectovideo', '-p',
+                        help="Crear Folder proyecto de Video")
     parser.add_argument('--proyectoarticulo', '-a', help="Crear articulo base")
+    
     parser.add_argument('--file', '-f', help="Archivo trabajar")
 
     args = parser.parse_args()
@@ -46,8 +62,12 @@ def main():
     elif args.proyectoarticulo:
         logger.info(f"Nombre del Archivo {args.proyectoarticulo}")
         CrearArticulo(args.proyectoarticulo)
+    elif args.video:
+        if args.file:
+            ConvertirVideo(args.file)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
+
 
 if __name__ == "__main__":
     main()
