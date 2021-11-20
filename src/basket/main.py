@@ -20,10 +20,12 @@ def main():
     parser.add_argument('--proyectovideo', '-p', help="Crear Folder proyecto de Video")
     parser.add_argument('--proyectoarticulo', '-a', help="Crear articulo base")
     parser.add_argument('--file', '-f', help="Archivo trabajar")
+    parser.add_argument('--depuracion', '-d', help="Activar depuracion", action="store_true")
 
     args = parser.parse_args()
     if args.icono:
-        ActualizarIconoFolder(args.file)
+        logger.info("Refrescae Iconos")
+        ActualizarIconoFolder(args.file, args.depuracion)
     elif args.blender_completo:
         if args.file:
             VideoTerminado = RenderizarVideo(args.file)
@@ -43,11 +45,13 @@ def main():
     elif args.proyectovideo:
         logger.info(f"Nombre del folder {args.proyectovideo}")
         CrearFolderVideo(args.proyectovideo)
+        ActualizarIconoFolder(args.file, args.depuracion)
     elif args.proyectoarticulo:
         logger.info(f"Nombre del Archivo {args.proyectoarticulo}")
         CrearArticulo(args.proyectoarticulo)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
+        # TODO: Agregar convertir video a 60 full HD
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,7 @@ import MiLibrerias
 
 logger = MiLibrerias.ConfigurarLogging(__name__)
 
-def ActualizarIconoFolder(Icono=None):
+def ActualizarIconoFolder(Icono=None, Depuracion=False):
     """Asignar un icono a folder recursicamente para gtk."""
     if Icono is None:
         Icono=".icono.png"
@@ -24,7 +24,8 @@ def ActualizarIconoFolder(Icono=None):
         for Archivo in archivos:
             if Archivo == Icono:
                 cantidad += 1
-                logger.info(f"Asignando icono {Icono} a {ruta}")
+                if Depuracion:
+                    logger.info(f"[{Icono}]{ruta}")
                 os.system(f"gio set {ruta} metadata::custom-icon {Icono}")
 
     logger.info(f"Cantidad iconos asignados {cantidad}")
