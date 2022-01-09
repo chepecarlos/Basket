@@ -1,15 +1,14 @@
 import argparse
 import os
-
-import MiLibrerias
-
 from pathlib import Path
 
-from operaciones.IconoFolder import ActualizarIconoFolder
-from operaciones.Pantillas import CrearFolderVideo, CrearArticulo
-from operaciones.OperacionesBlender import CrearProxy, RenderizarVideo, BorrarTemporalesBender, SuvirVideo
-from operaciones.Video import ConvertirVideo
+import MiLibrerias
+from operaciones import usuario
 from operaciones.graficaSun import graficaSun
+from operaciones.IconoFolder import ActualizarIconoFolder
+from operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SuvirVideo
+from operaciones.Pantillas import CrearArticulo, CrearFolderVideo
+from operaciones.Video import ConvertirVideo
 
 
 def main():
@@ -27,6 +26,8 @@ def main():
 
     parser.add_argument("--video", "-v", help="Convertir video a 60 fps", action="store_true")
     parser.add_argument("--grafica", "-g", help="Crecar Grafica 7 y 30 Dias")
+
+    parser.add_argument("--usuario", help="Cambiar usuario sistema")
 
     parser.add_argument("--proyectovideo", "-p", help="Crear Folder proyecto de Video")
     parser.add_argument("--proyectoarticulo", "-a", help="Crear articulo base")
@@ -66,9 +67,10 @@ def main():
             ConvertirVideo(args.file)
     elif args.grafica:
         graficaSun(args.grafica)
+    elif args.usuario:
+        usuario.SalvarUsuario(args.usuario)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
-        # TODO: Agregar convertir video a 60 full HD
 
 
 if __name__ == "__main__":

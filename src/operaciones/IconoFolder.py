@@ -11,7 +11,7 @@ def ActualizarIconoFolder(Icono=None, Depuracion=False):
     logger.info(f"Usando el Archivo {Icono}")
     cantidad = 0
 
-    FolderIgnorar = [".git", "venv", "node_modules", "BL_proxy", "bpsrender"]
+    FolderIgnorar = [".git", ".local", "venv", "node_modules", "BL_proxy", "bpsrender"]
 
     Ruta_Actual = os.getcwd()
 
@@ -24,8 +24,9 @@ def ActualizarIconoFolder(Icono=None, Depuracion=False):
         for Archivo in archivos:
             if Archivo == Icono:
                 cantidad += 1
+                Comando = f"gio set {ruta} metadata::custom-icon {Icono}"
                 if Depuracion:
-                    logger.info(f"[{Icono}]{ruta}")
-                os.system(f"gio set {ruta} metadata::custom-icon {Icono}")
+                    logger.info(f"[{Icono}] {ruta}")
+                os.system(Comando)
 
     logger.info(f"Cantidad iconos asignados {cantidad}")
