@@ -29,9 +29,11 @@ def actualizar_articulo(archivo):
     folder_miembros = archivo_miembros()
     data_miembros = pd.read_csv(folder_miembros)
     data_articulo = leer_archivo(archivo, data_miembros)
-    salvar_archivo(archivo, data_articulo)
-    print(data_articulo)
-    logger.info("Ya se actualizo el archivo")
+    if data_articulo is not None:
+        salvar_archivo(archivo, data_articulo)
+        logger.info("Ya se actualizo el archivo")
+    else:
+        logger.error("No se encontro miembros en el archivo")
 
 
 def leer_archivo(archivo, data_miembros):
@@ -40,6 +42,7 @@ def leer_archivo(archivo, data_miembros):
 
     nuevo = list()
     encontrado = False
+    hay_miembros = False
     for linea in lineas:
         if encontrado and not linea.startswith(" "):
             encontrado = False
@@ -48,12 +51,16 @@ def leer_archivo(archivo, data_miembros):
             nuevo.append(linea)
 
         if linea.startswith("miembros:"):
+            hay_miembros = True
             encontrado = True
             nuevo.append("  - Maker_Uno:\n")
             miembros = data_miembros["Miembro"]
             for miembro in miembros:
                 nuevo.append(f"    - title: {miembro}\n")
             continue
+
+    if not hay_miembros:
+        return None
 
     documento = tuple(nuevo)
     documento = "".join(documento)
