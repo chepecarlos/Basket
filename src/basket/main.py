@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 import MiLibrerias
+import operaciones.Miembros as MiembrosYT
 from operaciones import usuario
 from operaciones.graficaSun import graficaSun
 from operaciones.IconoFolder import ActualizarIconoFolder
@@ -34,6 +35,10 @@ def main():
 
     parser.add_argument("--file", "-f", help="Archivo trabajar")
     parser.add_argument("--depuracion", "-d", help="Activar depuracion", action="store_true")
+
+    parser.add_argument("--url_miembro", help="Actualiza base de datos de miembros", action="store_true")
+    parser.add_argument("--actualizar_miembro", "-am", help="Actualiza base de datos de miembros")
+    parser.add_argument("--miembro", "-m", help="Agrega miembros a un archivo de NocheProgramacion")
 
     args = parser.parse_args()
     if args.icono:
@@ -69,6 +74,12 @@ def main():
         graficaSun(args.grafica)
     elif args.usuario:
         usuario.SalvarUsuario(args.usuario)
+    elif args.url_miembro:
+        MiembrosYT.url_miembros()
+    elif args.actualizar_miembro:
+        MiembrosYT.actualizar_miembros(args.actualizar_miembro)
+    elif args.miembro:
+        MiembrosYT.actualizar_articulo(args.miembro)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
 
