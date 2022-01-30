@@ -53,10 +53,11 @@ def leer_archivo(archivo, data_miembros):
         if linea.startswith("miembros:"):
             hay_miembros = True
             encontrado = True
-            nuevo.append("  - Maker_Uno:\n")
+            nuevo.append("  - title: Maker_Uno\n")
+            nuevo.append("    items:\n")
             miembros = data_miembros["Miembro"]
             for miembro in miembros:
-                nuevo.append(f"    - title: {miembro}\n")
+                nuevo.append(f"      - title: {miembro}\n")
             continue
 
     if not hay_miembros:
