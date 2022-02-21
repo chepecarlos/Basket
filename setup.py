@@ -6,6 +6,9 @@ with open("VERSION", "r") as f:
 with open(file="README.md", mode="r") as readme_handle:
     long_description = readme_handle.read()
 
+with open("requirements.txt", "r") as f:
+    required = f.read().splitlines()
+
 setup(
     name="basket",
     version=version,
@@ -14,7 +17,7 @@ setup(
     author="ChepeCarlos",
     author_email="chepecarlos@alswblog.org",
     url="https://github.com/chepecarlos/Basket",
-    install_requires=[],
+    install_requires=required,
     packages=find_packages(where="src", exclude=("tests*", "testing*")),
     package_dir={"": "src"},
     entry_points={"console_scripts": ["basket-cli = basket.main:main"]},

@@ -1,0 +1,5 @@
+python-telegram-bot
+PyYAML
+paho-mqtt
+pandas
+matplotlib
