@@ -33,13 +33,15 @@ def actualizar_articulo(archivo):
         salvar_archivo(archivo, data_articulo)
         logger.info("Ya se actualizo el archivo")
     else:
-        logger.error("No se encontro miembros en el archivo")
+        logger.error("No se encontró miembros en el archivo")
 
 
 def leer_archivo(archivo, data_miembros):
+
     with open(archivo) as f:
         lineas = f.readlines()
 
+    nivelesMiembro = ("Maker ESP", "Maker Mega", "Maker Uno")
     nuevo = list()
     encontrado = False
     hay_miembros = False
@@ -51,13 +53,19 @@ def leer_archivo(archivo, data_miembros):
             nuevo.append(linea)
 
         if linea.startswith("miembros:"):
-            hay_miembros = True
             encontrado = True
-            nuevo.append("  - title: Maker_Uno\n")
-            nuevo.append("    items:\n")
-            miembros = data_miembros["Miembro"]
-            for miembro in miembros:
-                nuevo.append(f"      - title: {miembro}\n")
+            for nivel in nivelesMiembro:
+                filtro = data_miembros["Nivel actual"] == nivel
+                miembrosActuales = data_miembros[filtro]
+                cantidad = len(miembrosActuales)
+                if cantidad:
+                    hay_miembros = True
+                    print(f"Nivel {nivel} - {cantidad} ")
+                    nombreMiembros = miembrosActuales["Miembro"]
+                    nuevo.append(f"  - title: {nivel}\n")
+                    nuevo.append("    items:\n")
+                    for miembro in nombreMiembros:
+                        nuevo.append(f"      - title: {miembro}\n")
             continue
 
     if not hay_miembros:
