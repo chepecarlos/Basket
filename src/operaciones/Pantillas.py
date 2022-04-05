@@ -20,8 +20,10 @@ def CrearFolderVideo(NombreFolder):
 
 def CrearArticulo(NombreArticulo):
     """Copia Articulo Base a directorio actual."""
+    archivo = "data/plantilla.json"
+    atributo = "articulo_base"
     NombreArticulo = NombreSinEspacios(NombreArticulo)
-    ArticuloBase = MiLibrerias.ObtenerValor("data/Plantilla.json", "ArticuloBase")
+    ArticuloBase = MiLibrerias.ObtenerValor(archivo, atributo)
     if ArticuloBase is not None:
         NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
         try:
@@ -29,6 +31,8 @@ def CrearArticulo(NombreArticulo):
             logger.info("Articulo Creado")
         except OSError as err:
             logger.exception("Error: % s" % err)
+    else:
+        logger.warning(f"Error revisa: {archivo}[{atributo}]")
 
 def NombreSinEspacios(Nombre):
     if Nombre is not None:
