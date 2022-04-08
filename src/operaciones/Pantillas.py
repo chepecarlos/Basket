@@ -7,16 +7,21 @@ logger = MiLibrerias.ConfigurarLogging(__name__)
 
 def CrearFolderVideo(NombreFolder):
     """Copia Folder Base de proyectos a directorio actual."""
+    archivo = "data/plantilla.json"
+    atributo = "proyecto_ejemplo"
     NombreFolder = NombreSinEspacios(NombreFolder)
-    FolderBase = MiLibrerias.ObtenerValor("data/Plantilla.json", "ProyectoEjemplo")
-    if FolderBase is not None:
-        NuevoFolder = os.path.join(os.getcwd(), NombreFolder)
-        try:
-            shutil.copytree(FolderBase, NuevoFolder)
-            logger.info("Folder Creado")
-        except OSError as err:
-            logger.exception("Error: % s" % err)
+    FolderBase = MiLibrerias.ObtenerValor(archivo, atributo)
 
+    if FolderBase is  None:
+        logger.warning(f"Error revisa: {archivo}[{atributo}]")
+        return 
+
+    NuevoFolder = os.path.join(os.getcwd(), NombreFolder)
+    try:
+        shutil.copytree(FolderBase, NuevoFolder)
+        logger.info("Folder Creado")
+    except OSError as err:
+        logger.exception("Error: % s" % err)
 
 def CrearArticulo(NombreArticulo):
     """Copia Articulo Base a directorio actual."""
@@ -24,15 +29,15 @@ def CrearArticulo(NombreArticulo):
     atributo = "articulo_base"
     NombreArticulo = NombreSinEspacios(NombreArticulo)
     ArticuloBase = MiLibrerias.ObtenerValor(archivo, atributo)
-    if ArticuloBase is not None:
-        NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
-        try:
-            shutil.copy2(ArticuloBase, NuevoArticulo)
-            logger.info("Articulo Creado")
-        except OSError as err:
-            logger.exception("Error: % s" % err)
-    else:
+    if ArticuloBase is  None:
         logger.warning(f"Error revisa: {archivo}[{atributo}]")
+
+    NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
+    try:
+        shutil.copy2(ArticuloBase, NuevoArticulo)
+        logger.info("Articulo Creado")
+    except OSError as err:
+        logger.exception("Error: % s" % err)
 
 def NombreSinEspacios(Nombre):
     if Nombre is not None:
