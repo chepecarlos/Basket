@@ -11,6 +11,7 @@ from operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, R
 from operaciones.Pantillas import CrearArticulo, CrearFolderVideo
 from operaciones.subtitulos import transformarSubtitulos
 from operaciones.Video import ConvertirVideo
+from operaciones.asistencia import cargarAsistencia
 
 
 def main():
@@ -41,6 +42,8 @@ def main():
     parser.add_argument("--actualizar_miembro", "-am", help="Actualiza base de datos de miembros")
     parser.add_argument("--miembro", "-m", help="Agrega miembros a un archivo de NocheProgramacion")
     parser.add_argument("--transformar_subtitulos", "-s", help="Transformar ttml a csv para subtítulos de blender")
+
+    parser.add_argument("--asistente", help="copia a papelera los asistentes del Envivo")
 
     args = parser.parse_args()
     if args.icono:
@@ -84,6 +87,8 @@ def main():
         MiembrosYT.actualizar_articulo(args.miembro)
     elif args.transformar_subtitulos:
         transformarSubtitulos(args.transformar_subtitulos)
+    elif args.asistente:
+        cargarAsistencia(args.asistente)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
 
