@@ -3,15 +3,17 @@ import os
 from pathlib import Path
 
 import MiLibrerias
-import operaciones.Miembros as MiembrosYT
-from operaciones import usuario
-from operaciones.graficaSun import graficaSun
-from operaciones.IconoFolder import ActualizarIconoFolder
-from operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SuvirVideo
-from operaciones.Pantillas import CrearArticulo, CrearFolderVideo
-from operaciones.subtitulos import transformarSubtitulos
-from operaciones.Video import ConvertirVideo
-from operaciones.presente import cargarPresente
+
+import basket.operaciones.Miembros as MiembrosYT
+from basket.operaciones.presente import cargarPresente
+
+from .operaciones import usuario
+from .operaciones.graficaSun import graficaSun
+from .operaciones.IconoFolder import ActualizarIconoFolder
+from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SubirVideo
+from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
+from .operaciones.subtitulos import transformarSubtitulos
+from .operaciones.Video import ConvertirVideo
 
 
 def main():

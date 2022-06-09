@@ -1,5 +1,6 @@
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+
 
 def graficaSun(Archivo):
 
@@ -34,8 +35,7 @@ def graficaSun(Archivo):
     axs[0].grid(axis="y", color="gray", linestyle="dashed")
     axs[0].set_xlabel(etiquetaFecha)
     axs[0].set_ylabel(etiqueta)
-    axs[0].legend(loc="upper left")  
-    
+    axs[0].legend(loc="upper left")
 
     axs[1].plot(fechas, valores, label=etiqueta)
     axs[1].plot(fechas, sum7, label=f"Suma7 {etiqueta}")
@@ -50,10 +50,8 @@ def graficaSun(Archivo):
     axs[2].set_ylabel(etiqueta)
     axs[2].legend(loc="upper left")
 
-
     plt.gcf().autofmt_xdate()
 
     plt.tight_layout()
-    fig.suptitle(f"Grafica suma7 y suma30 de {etiqueta}")
+    fig.suptitle(f"Gráfica suma7 y suma30 de {etiqueta}", y=0.99, fontsize=10)
     plt.show()
-
