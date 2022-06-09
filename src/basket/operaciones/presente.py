@@ -1,12 +1,11 @@
+import basket.miLibrerias as miLibrerias
 import pyclip
 
-import MiLibrerias
-
-logger = MiLibrerias.ConfigurarLogging(__name__)
+logger = miLibrerias.ConfigurarLogging(__name__)
 
 
 def cargarPresente(archivo):
-    Data = MiLibrerias.ObtenerArchivo(archivo, False)
+    Data = miLibrerias.ObtenerArchivo(archivo, False)
     if Data is None:
         logger.warning("Erro no hay Presente")
         return

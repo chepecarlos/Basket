@@ -2,8 +2,7 @@ import argparse
 import os
 from pathlib import Path
 
-import MiLibrerias
-
+import basket.miLibrerias as miLibrerias
 import basket.operaciones.Miembros as MiembrosYT
 from basket.operaciones.presente import cargarPresente
 
@@ -17,7 +16,7 @@ from .operaciones.Video import ConvertirVideo
 
 
 def main():
-    logger = MiLibrerias.ConfigurarLogging(__name__)
+    logger = miLibrerias.ConfigurarLogging(__name__)
 
     parser = argparse.ArgumentParser(description="Heramientas Automatizacion de ALSW")
     parser.add_argument("--icono", "-i", help="Actualizar Icono a folder gtk", action="store_true")

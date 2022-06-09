@@ -2,10 +2,10 @@ import datetime
 import time
 from pathlib import Path
 
-import MiLibrerias
+import basket.miLibrerias as miLibrerias
 from basket.extra.SubProceso import EmpezarSubProceso
 
-logger = MiLibrerias.ConfigurarLogging(__name__)
+logger = miLibrerias.ConfigurarLogging(__name__)
 
 # Cortar Video de inicio y fin
 # ffmpeg -i "Fin_de_Semana_Mecatrónico_2.0_Día_1_60.mkv" -ss 01:08:40 -to 2:27:48 -vcodec copy -acodec copy "ChepeCarlos_1.mkv"

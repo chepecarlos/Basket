@@ -1,13 +1,14 @@
 import os
 
-import MiLibrerias
+import basket.miLibrerias as miLibrerias
 
-logger = MiLibrerias.ConfigurarLogging(__name__)
+logger = miLibrerias.ConfigurarLogging(__name__)
+
 
 def ActualizarIconoFolder(Icono=None, Depuracion=False):
     """Asignar un icono a folder recursicamente para gtk."""
     if Icono is None:
-        Icono=".icono.png"
+        Icono = ".icono.png"
     logger.info(f"Usando el Archivo {Icono}")
     cantidad = 0
 

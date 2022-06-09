@@ -1,20 +1,21 @@
-import shutil
 import os
+import shutil
 
-import MiLibrerias
+import basket.miLibrerias as miLibrerias
 
-logger = MiLibrerias.ConfigurarLogging(__name__)
+logger = miLibrerias.ConfigurarLogging(__name__)
+
 
 def CrearFolderVideo(NombreFolder):
     """Copia Folder Base de proyectos a directorio actual."""
     archivo = "data/plantilla.json"
     atributo = "proyecto_ejemplo"
     NombreFolder = NombreSinEspacios(NombreFolder)
-    FolderBase = MiLibrerias.ObtenerValor(archivo, atributo)
+    FolderBase = miLibrerias.ObtenerValor(archivo, atributo)
 
-    if FolderBase is  None:
+    if FolderBase is None:
         logger.warning(f"Error revisa: {archivo}[{atributo}]")
-        return 
+        return
 
     NuevoFolder = os.path.join(os.getcwd(), NombreFolder)
     try:
@@ -23,13 +24,14 @@ def CrearFolderVideo(NombreFolder):
     except OSError as err:
         logger.exception("Error: % s" % err)
 
+
 def CrearArticulo(NombreArticulo):
     """Copia Articulo Base a directorio actual."""
     archivo = "data/plantilla.json"
     atributo = "articulo_base"
     NombreArticulo = NombreSinEspacios(NombreArticulo)
-    ArticuloBase = MiLibrerias.ObtenerValor(archivo, atributo)
-    if ArticuloBase is  None:
+    ArticuloBase = miLibrerias.ObtenerValor(archivo, atributo)
+    if ArticuloBase is None:
         logger.warning(f"Error revisa: {archivo}[{atributo}]")
 
     NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
@@ -38,6 +40,7 @@ def CrearArticulo(NombreArticulo):
         logger.info("Articulo Creado")
     except OSError as err:
         logger.exception("Error: % s" % err)
+
 
 def NombreSinEspacios(Nombre):
     if Nombre is not None:

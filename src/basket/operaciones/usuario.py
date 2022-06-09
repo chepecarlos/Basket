@@ -1,9 +1,9 @@
 """Funciones de Usuario."""
 
-import MiLibrerias
-from MiLibrerias import FuncionesArchivos
+import basket.miLibrerias as miLibrerias
+from basket.miLibrerias import FuncionesArchivos
 
-logger = MiLibrerias.ConfigurarLogging(__name__)
+logger = miLibrerias.ConfigurarLogging(__name__)
 
 
 def SalvarUsuario(Nombre):

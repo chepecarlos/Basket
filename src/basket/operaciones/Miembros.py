@@ -1,11 +1,11 @@
 import os.path
 import shutil
 
-import MiLibrerias
+import basket.miLibrerias as miLibrerias
 import pandas as pd
-from MiLibrerias import FuncionesArchivos
+from basket.miLibrerias import FuncionesArchivos
 
-logger = MiLibrerias.ConfigurarLogging(__name__)
+logger = miLibrerias.ConfigurarLogging(__name__)
 
 
 def archivo_miembros():
