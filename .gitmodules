@@ -1,0 +1,3 @@
+[submodule "src/basket/miLibrerias"]
+	path = src/basket/miLibrerias
+	url = https://github.com/chepecarlos/MiLibrerias.git
