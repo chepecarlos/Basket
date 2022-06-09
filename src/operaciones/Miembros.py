@@ -1,4 +1,6 @@
+import logging
 import shutil
+import os.path
 
 import MiLibrerias
 import pandas as pd
@@ -10,6 +12,10 @@ logger = MiLibrerias.ConfigurarLogging(__name__)
 def archivo_miembros():
     folder_log = FuncionesArchivos.ObtenerFolderConfig()
     folder_miembros = FuncionesArchivos.UnirPath(folder_log, "miembros.csv")
+    if not os.path.exists(folder_miembros):
+        logger.info("no existe miembros.csv")
+        return None
+    
     return folder_miembros
 
 
@@ -27,6 +33,8 @@ def actualizar_miembros(archivo):
 def actualizar_articulo(archivo):
     logger.info(f"Actualizando Articulo {archivo}")
     folder_miembros = archivo_miembros()
+    if folder_miembros is None:
+        return 
     data_miembros = pd.read_csv(folder_miembros)
     data_articulo = leer_archivo(archivo, data_miembros)
     if data_articulo is not None:

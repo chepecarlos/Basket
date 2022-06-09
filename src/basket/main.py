@@ -3,17 +3,15 @@ import os
 from pathlib import Path
 
 import MiLibrerias
-from sympy import im
-
-import basket.operaciones.Miembros as MiembrosYT
-
-from .operaciones import usuario
-from .operaciones.graficaSun import graficaSun
-from .operaciones.IconoFolder import ActualizarIconoFolder
-from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SubirVideo
-from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
-from .operaciones.subtitulos import transformarSubtitulos
-from .operaciones.Video import ConvertirVideo
+import operaciones.Miembros as MiembrosYT
+from operaciones import usuario
+from operaciones.graficaSun import graficaSun
+from operaciones.IconoFolder import ActualizarIconoFolder
+from operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SuvirVideo
+from operaciones.Pantillas import CrearArticulo, CrearFolderVideo
+from operaciones.subtitulos import transformarSubtitulos
+from operaciones.Video import ConvertirVideo
+from operaciones.presente import cargarPresente
 
 
 def main():
@@ -25,7 +23,9 @@ def main():
     parser.add_argument("--blender_proxy", "-bp", help="Creando proxy de Blender", action="store_true")
     parser.add_argument("--blender_renderizar", "-br", help="Renderizar video con Blender", action="store_true")
     parser.add_argument("--blender_borrar", "-bb", help="Borrar Temporales de Blender", action="store_true")
-    parser.add_argument("--blender_completo", "-bc", help="Renderiza video Blender y sube a youtube")
+    parser.add_argument(
+        "--blender_completo", "-bc", help="Renderiza video Blender y sube a youtube", action="store_true"
+    )
 
     parser.add_argument("--video", "-v", help="Convertir video a 60 fps", action="store_true")
     parser.add_argument("--grafica", "-g", help="Crecar Grafica 7 y 30 Dias")
@@ -43,14 +43,17 @@ def main():
     parser.add_argument("--miembro", "-m", help="Agrega miembros a un archivo de NocheProgramacion")
     parser.add_argument("--transformar_subtitulos", "-s", help="Transformar ttml a csv para subtítulos de blender")
 
+    parser.add_argument("--presente", help="copia a papelera los asistentes del Envivo")
+
     args = parser.parse_args()
     if args.icono:
         logger.info("Refrescae Iconos")
         ActualizarIconoFolder(args.file, args.depuracion)
     elif args.blender_completo:
-        VideoTerminado = RenderizarVideo(args.blender_completo)
-        if VideoTerminado:
-            VideoSubido = SubirVideo(args.blender_completo)
+        if args.file:
+            VideoTerminado = RenderizarVideo(args.file)
+            if VideoTerminado:
+                VideoSuvido = SuvirVideo(args.file)
     elif args.blender_proxy:
         logger.info("Empezando a crear proxy")
         CrearProxy(os.getcwd())
@@ -84,6 +87,8 @@ def main():
         MiembrosYT.actualizar_articulo(args.miembro)
     elif args.transformar_subtitulos:
         transformarSubtitulos(args.transformar_subtitulos)
+    elif args.presente:
+        cargarPresente(args.presente)
     else:
         logger.info("Opcion no encontrada, lee documentacion con -h")
 
