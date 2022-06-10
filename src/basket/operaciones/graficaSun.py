@@ -22,7 +22,6 @@ def graficaSun(Archivo):
         if dia.is_month_start:
             inicioMes.append(dia)
             etiquetaMes.append(f"{dia.month}/{dia.year}")
-            # print(dia)
 
     data.sort_values(etiquetaFecha, inplace=True)
 
@@ -44,21 +43,13 @@ def graficaSun(Archivo):
             if j >= 0 and j < cantidad:
                 sum30[id] += valores[j]
 
-    max30 = sum30[30]
-    min30 = sum30[30]
-    for valor in sum30[30:]:
-        if min30 < valor:
-            min30 = valor
-        if max30 > valor:
-            max30 = valor
-    logger.info(f"max {max30} - min {min30}")
-
     fig, axs = plt.subplots(3, 1)
 
     offset = 10
     bbox = dict(boxstyle="round", fc="0.8")
     arrowprops = dict(arrowstyle="->", connectionstyle="angle,angleA=0,angleB=90,rad=10")
 
+    [min30, max30] = encontrarMaxMin(sum30[30:])
     grafica30 = axs[0]
     grafica30.plot(fechas, valores, label=etiqueta)
     grafica30.plot(fechas, sum7, label=f"Suma7")
@@ -82,20 +73,26 @@ def graficaSun(Archivo):
 
     # grafica30.vlines([fechas[0]], 0, 1, transform=graficaAbajo.get_xaxis_transform(), colors="r")
 
+    [min30, max30] = encontrarMaxMin(sum7[30:])
     grafica7 = axs[1]
     grafica7.plot(fechas, valores, label=etiqueta)
-    grafica7.plot(fechas, sum7, label=f"Suma7 {etiqueta}")
+    grafica7.plot(fechas, sum7, label=f"Suma7")
     grafica7.grid(axis="y", color="gray", linestyle="dashed")
     grafica7.set_xlabel(etiquetaFecha)
     grafica7.set_ylabel(etiqueta)
     grafica7.legend(loc="upper left")
+    grafica7.hlines(max30, fechas.iloc[7], fechas.iloc[-1], colors="#000000")
+    grafica7.hlines(min30, fechas.iloc[7], fechas.iloc[-1], colors="#ff0000")
 
+    [min30, max30] = encontrarMaxMin(valores)
     graficaNormal = axs[2]
     graficaNormal.plot(fechas, valores, label=etiqueta)
     graficaNormal.grid(axis="y", color="gray", linestyle="dashed")
     graficaNormal.set_xlabel(etiquetaFecha)
     graficaNormal.set_ylabel(etiqueta)
     graficaNormal.legend(loc="upper left")
+    graficaNormal.hlines(max30, fechas.iloc[0], fechas.iloc[-1], colors="#000000")
+    graficaNormal.hlines(min30, fechas.iloc[0], fechas.iloc[-1], colors="#ff0000")
 
     plt.xticks(inicioMes, etiquetaMes)
     plt.gcf().autofmt_xdate()
@@ -103,3 +100,15 @@ def graficaSun(Archivo):
     plt.tight_layout()
     fig.suptitle(f"Gráfica suma7 y suma30 de {etiqueta}", y=0.99, fontsize=10)
     plt.show()
+
+
+def encontrarMaxMin(valores):
+    max30 = valores[0]
+    min30 = valores[0]
+    for valor in valores:
+        if min30 < valor:
+            min30 = valor
+        if max30 > valor:
+            max30 = valor
+    logger.info(f"max {max30} - min {min30}")
+    return (min30, max30)
