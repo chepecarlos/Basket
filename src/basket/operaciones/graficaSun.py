@@ -1,8 +1,7 @@
-import basket.miLibrerias as miLibrerias
 import matplotlib.pyplot as plt
 import pandas as pd
-from sqlalchemy import column
-from sympy import Min
+
+import basket.miLibrerias as miLibrerias
 
 logger = miLibrerias.ConfigurarLogging(__name__)
 
@@ -14,7 +13,6 @@ def graficaSun(Archivo):
     etiquetaFecha = data.columns[0]
 
     data[etiquetaFecha] = pd.to_datetime(data[etiquetaFecha])
-    # print(dir(data[etiquetaFecha].dt))
 
     inicioMes = []
     etiquetaMes = []
@@ -54,7 +52,7 @@ def graficaSun(Archivo):
     grafica30.plot(fechas, valores, label=etiqueta)
     grafica30.plot(fechas, sum7, label=f"Suma7")
     grafica30.plot(fechas, sum30, label=f"Suma30")
-    grafica30.grid(axis="y", color="gray", linestyle="dashed")
+    grafica30.grid(axis="both", color="gray", linestyle="dashed")
     grafica30.set_xlabel(etiquetaFecha)
     grafica30.set_ylabel(etiqueta)
     grafica30.legend(loc="upper left")
@@ -77,7 +75,7 @@ def graficaSun(Archivo):
     grafica7 = axs[1]
     grafica7.plot(fechas, valores, label=etiqueta)
     grafica7.plot(fechas, sum7, label=f"Suma7")
-    grafica7.grid(axis="y", color="gray", linestyle="dashed")
+    grafica7.grid(axis="both", color="gray", linestyle="dashed")
     grafica7.set_xlabel(etiquetaFecha)
     grafica7.set_ylabel(etiqueta)
     grafica7.legend(loc="upper left")
@@ -87,7 +85,7 @@ def graficaSun(Archivo):
     [min30, max30] = encontrarMaxMin(valores)
     graficaNormal = axs[2]
     graficaNormal.plot(fechas, valores, label=etiqueta)
-    graficaNormal.grid(axis="y", color="gray", linestyle="dashed")
+    graficaNormal.grid(axis="both", color="gray", linestyle="dashed")
     graficaNormal.set_xlabel(etiquetaFecha)
     graficaNormal.set_ylabel(etiqueta)
     graficaNormal.legend(loc="upper left")
