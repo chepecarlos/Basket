@@ -25,7 +25,7 @@ def ActualizarIconoFolder(Icono=None, Depuracion=False):
         for Archivo in archivos:
             if Archivo == Icono:
                 cantidad += 1
-                Comando = f"gio set {ruta} metadata::custom-icon {Icono}"
+                Comando = f"gio set {ruta} -t string metadata::custom-icon {Icono}"
                 if Depuracion:
                     logger.info(f"[{Icono}] {ruta}")
                 os.system(Comando)
