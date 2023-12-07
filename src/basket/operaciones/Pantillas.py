@@ -33,6 +33,7 @@ def CrearArticulo(NombreArticulo):
     ArticuloBase = miLibrerias.ObtenerValor(archivo, atributo)
     if ArticuloBase is None:
         logger.warning(f"Error revisa: {archivo}[{atributo}]")
+        exit()
 
     NuevoArticulo = os.path.join(os.getcwd(), NombreArticulo + ".md")
     try:
