@@ -11,7 +11,6 @@ from .operaciones.graficaSun import graficaSun
 from .operaciones.IconoFolder import ActualizarIconoFolder
 from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SubirVideo
 from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
-from .operaciones.subtitulos import transformarSubtitulos
 from .operaciones.Video import ConvertirVideo
 
 
@@ -40,7 +39,6 @@ def main():
     parser.add_argument("--url_miembro", help="Actualiza base de datos de miembros", action="store_true")
     parser.add_argument("--actualizar_miembro", "-am", help="Actualiza base de datos de miembros")
     parser.add_argument("--miembro", "-m", help="Agrega miembros a un archivo de NocheProgramacion")
-    parser.add_argument("--transformar_subtitulos", "-s", help="Transformar ttml a csv para subtítulos de blender")
 
     parser.add_argument("--presente", help="copia a papelera los asistentes del Envivo")
 
@@ -83,8 +81,6 @@ def main():
         MiembrosYT.actualizar_miembros(args.actualizar_miembro)
     elif args.miembro:
         MiembrosYT.actualizar_articulo(args.miembro)
-    elif args.transformar_subtitulos:
-        transformarSubtitulos(args.transformar_subtitulos)
     elif args.presente:
         cargarPresente(args.presente)
     else:
