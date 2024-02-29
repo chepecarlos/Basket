@@ -10,7 +10,7 @@ logger = miLibrerias.ConfigurarLogging(__name__)
 
 
 def CrearProxy(Directorio):
-    miLibrerias.EnviarMensajeTelegram(f"<b>Empezar</b> a crear Proxy de {Directorio}")
+    miLibrerias.EnviarMensajeTelegram(f"*Empezar* a crear Proxy de {Directorio}")
 
     Inicio = time.time()
     comando = ["bpsproxy"]
@@ -21,17 +21,17 @@ def CrearProxy(Directorio):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo creacion de proxy {Tiempo} {Directorio}")
-        miLibrerias.EnviarMensajeTelegram(f"<b>Finalizo</b> creacion de proxy {Tiempo} - {Directorio}")
+        miLibrerias.EnviarMensajeTelegram(f"*Finalizo* creacion de proxy {Tiempo} - {Directorio}")
     else:
         logger.warning(f"ERROR {EstadoPreceso} creacion de proxy {Tiempo} {Directorio} ")
-        miLibrerias.EnviarMensajeTelegram(f"<b>ERROR</b> {EstadoPreceso} creacion de proxy {Tiempo} - {Directorio}")
+        miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} creacion de proxy {Tiempo} - {Directorio}")
 
 
 def RenderizarVideo(Archivo):
     if not Archivo.endswith(".blend"):
         Archivo += ".blend"
-    miLibrerias.EnviarMensajeTelegram(f"Empezar a <b>Rendizar Video</b> {Archivo}")
-    logger.info(f"Empezar a <b>Rendizar Video</b> {Archivo}")
+    miLibrerias.EnviarMensajeTelegram(f"Empezar a *Rendizar Video* {Archivo}")
+    logger.info(f"Empezar a *Rendizar Video* {Archivo}")
 
     Inicio = time.time()
     comando = ["bpsrender", Archivo]
@@ -42,11 +42,11 @@ def RenderizarVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo la renderizacion {Tiempo} {Archivo}")
-        miLibrerias.EnviarMensajeTelegram(f"<b>Finalizo</b> la renderizacion " + Tiempo + " - " + Archivo)
+        miLibrerias.EnviarMensajeTelegram(f"*Finalizo* la renderizacion " + Tiempo + " - " + Archivo)
         return True
     else:
         logger.info(f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
-        miLibrerias.EnviarMensajeTelegram(f"<b>ERROR</b> {EstadoPreceso} la renderizacion {Tiempo} - {Archivo}")
+        miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} la renderizacion {Tiempo} - {Archivo}")
 
     return False
 
@@ -87,7 +87,7 @@ def SubirVideo(Archivo):
     if not Archivo.endswith(".mp4"):
         Archivo += ".mp4"
 
-    miLibrerias.EnviarMensajeTelegram(f"<b>Empezar</b> a subir video a YouTube - {Archivo}")
+    miLibrerias.EnviarMensajeTelegram(f"*Empezar* a subir video a YouTube - {Archivo}")
 
     Inicio = time.time()
     comando = ["tooltube", "-u", Archivo]
@@ -98,12 +98,12 @@ def SubirVideo(Archivo):
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Se subió el video {Tiempo} {Archivo}")
-        miLibrerias.EnviarMensajeTelegram(f"Video <b>Subido</b> a Youtube {Archivo} Tardo: { Tiempo}")
+        miLibrerias.EnviarMensajeTelegram(f"Video *Subido* a Youtube {Archivo} Tardo: { Tiempo}")
         return True
     else:
         logger.info(f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo}")
         miLibrerias.EnviarMensajeTelegram(
-            f"<b>ERROR</b> {EstadoPreceso} no se puedo subir el video {Tiempo} - {Archivo}"
+            f"*ERROR* {EstadoPreceso} no se puedo subir el video {Tiempo} - {Archivo}"
         )
 
     return False
