@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--blender_renderizar", "-br", help="Renderizar video con Blender")
     parser.add_argument("--blender_borrar", "-bb", help="Borrar Temporales de Blender", action="store_true")
     parser.add_argument("--blender_completo", "-bc", help="Renderiza video Blender y sube a youtube")
+    parser.add_argument("--canal", "-c", help="Especifica Canal")
 
     parser.add_argument("--video", "-v", help="Convertir video a 60 fps", action="store_true")
     parser.add_argument("--grafica", "-g", help="Crecar Grafica 7 y 30 Dias")
@@ -47,9 +48,14 @@ def main():
         logger.info("Refrescar Iconos")
         actualizarIconoFolder(args.file, args.depuracion)
     elif args.blender_completo:
+        Canal = None
+        if args.canal:
+            Canal = args.canal
+            logger.info(f"Subiendo a {Canal}")
+
         VideoTerminado = RenderizarVideo(args.blender_completo)
         if VideoTerminado:
-            VideoSubido = SubirVideo(args.blender_completo)
+            VideoSubido = SubirVideo(args.blender_completo, Canal)
     elif args.blender_proxy:
         logger.info("Empezando a crear proxy")
         CrearProxy(os.getcwd())
