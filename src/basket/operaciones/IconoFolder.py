@@ -33,5 +33,15 @@ def actualizarIconoFolder(icono=None, depuracion=False):
     logger.info(f"Cantidad iconos asignados {cantidad}")
 
 
+def actualizarIconoDeterminado(icono, folder):
+
+    if icono is None or folder is None:
+        print("Error Faltan Datos")
+        return
+
+    Comando = f"gio set {folder} -t string metadata::custom-icon {icono}"
+    os.system(Comando)
+
+
 def actualizarIconoProyecto():
     pass

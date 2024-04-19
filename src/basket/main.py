@@ -8,7 +8,7 @@ from basket.operaciones.presente import cargarPresente
 
 from .operaciones import usuario
 from .operaciones.graficaSun import graficaSun
-from .operaciones.IconoFolder import ActualizarIconoFolder
+from .operaciones.IconoFolder import actualizarIconoFolder
 from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SubirVideo
 from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
 from .operaciones.Video import ConvertirVideo
@@ -45,7 +45,7 @@ def main():
     args = parser.parse_args()
     if args.icono:
         logger.info("Refrescar Iconos")
-        ActualizarIconoFolder(args.file, args.depuracion)
+        actualizarIconoFolder(args.file, args.depuracion)
     elif args.blender_completo:
         VideoTerminado = RenderizarVideo(args.blender_completo)
         if VideoTerminado:
@@ -64,7 +64,7 @@ def main():
     elif args.proyectovideo:
         logger.info(f"Nombre del folder {args.proyectovideo}")
         CrearFolderVideo(args.proyectovideo)
-        ActualizarIconoFolder(args.file, args.depuracion)
+        actualizarIconoFolder(args.file, args.depuracion)
     elif args.proyectoarticulo:
         logger.info(f"Nombre del Archivo {args.proyectoarticulo}")
         CrearArticulo(args.proyectoarticulo)
