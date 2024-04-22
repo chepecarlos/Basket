@@ -73,7 +73,7 @@ def remove_suffix(input_string, suffix):
     return input_string
 
 
-def SubirVideo(Archivo):
+def SubirVideo(Archivo, Canal=None):
     """Sube video a Youtube."""
     # if ytArchivo)
     print(f"tipo: {type(Archivo)}")
@@ -90,7 +90,12 @@ def SubirVideo(Archivo):
     miLibrerias.EnviarMensajeTelegram(f"*Empezar* a subir video a YouTube - {Archivo}")
 
     Inicio = time.time()
-    comando = ["tooltube", "-u", Archivo]
+    if Canal is not None:
+        comando = ["tooltube", "--uploader", Archivo, "--cana", Canal]
+        logger.info(f"Canal: {Canal}")
+    else:
+        comando = ["tooltube", "--uploader", Archivo]
+        
     EstadoPreceso = EmpezarSubProceso(comando)
 
     Final = time.time()
