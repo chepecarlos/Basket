@@ -2,7 +2,6 @@ import os
 import shutil
 
 import basket.miLibrerias as miLibrerias
-from tooltube.minotion.minotion import crearNotion
 
 logger = miLibrerias.ConfigurarLogging(__name__)
 
@@ -24,8 +23,18 @@ def CrearFolderVideo(NombreFolder):
         logger.info("Folder Creado")
     except OSError as err:
         logger.exception("Error: % s" % err)
-        
+    crearPaginaNotion(NuevoFolder)
+    actualizarEstadoNotion(NuevoFolder)
+
+
+def crearPaginaNotion(NuevoFolder):
+    from tooltube.minotion.minotion import crearNotion
     crearNotion(NuevoFolder)
+
+
+def actualizarEstadoNotion(NuevoFolder):
+    from tooltube.tooltube_analisis import actualizarEstado
+    actualizarEstado(NuevoFolder)
 
 
 def CrearArticulo(NombreArticulo):
