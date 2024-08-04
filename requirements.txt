@@ -5,3 +5,6 @@ pandas
 matplotlib
 pyclip
 bpsrender
+ffmpeg
+pydub
+SpeechRecognition

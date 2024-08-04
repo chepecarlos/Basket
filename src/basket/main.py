@@ -12,7 +12,8 @@ from .operaciones.IconoFolder import actualizarIconoFolder
 from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SubirVideo
 from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
 from .operaciones.Video import ConvertirVideo
-
+from .operaciones.convertir import convertir_wav
+from .operaciones.subtitulo import crearSubtituloSBV
 
 def main():
     logger = miLibrerias.ConfigurarLogging(__name__)
@@ -24,6 +25,8 @@ def main():
     parser.add_argument("--blender_renderizar", "-br", help="Renderizar video con Blender")
     parser.add_argument("--blender_borrar", "-bb", help="Borrar Temporales de Blender", action="store_true")
     parser.add_argument("--blender_completo", "-bc", help="Renderiza video Blender y sube a youtube")
+    parser.add_argument("--blender_subtitulo", "-bs", help="Renderiza video Blender y crea subtitulo.sbv")
+    
     parser.add_argument("--canal", "-c", help="Especifica Canal")
 
     parser.add_argument("--video", "-v", help="Convertir video a 60 fps", action="store_true")
@@ -67,6 +70,20 @@ def main():
         logger.info("Borrar temporales de Blender")
         BorrarTemporalesBender("BL_proxy")
         BorrarTemporalesBender("bpsrender")
+    elif args.blender_subtitulo:
+        if ".blend" in args.blender_subtitulo:
+            VideoMP4 = RenderizarVideo(args.blender_subtitulo)
+        elif ".mp4" in args.blender_subtitulo:
+            VideoMP4 = args.blender_subtitulo
+        else:
+            print(f"Error en Archivo {args.blender_subtitulo}")
+            return
+        
+        if VideoMP4:
+            audioWav = convertir_wav(VideoMP4)  
+        if audioWav:
+            print("Creando archivo subtitulo")
+            crearSubtituloSBV(audioWav)
     elif args.proyectovideo:
         logger.info(f"Nombre del folder {args.proyectovideo}")
         CrearFolderVideo(args.proyectovideo)
