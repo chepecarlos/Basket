@@ -73,6 +73,9 @@ def main():
     elif args.blender_subtitulo:
         if ".blend" in args.blender_subtitulo:
             VideoMP4 = RenderizarVideo(args.blender_subtitulo)
+            VideoMP4 = args.blender_subtitulo
+            nombreArchivo = args.blender_subtitulo.split(".")
+            VideoMP4 = f"{nombreArchivo[0]}.mp4"
         elif ".mp4" in args.blender_subtitulo:
             VideoMP4 = args.blender_subtitulo
         else:
