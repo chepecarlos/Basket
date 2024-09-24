@@ -1,7 +1,11 @@
 import speech_recognition as sr
 import os
 from pydub import AudioSegment
+import basket.miLibrerias as miLibrerias
+
 from basket.miLibrerias.FuncionesArchivos import EscribirArchivo
+
+logger = miLibrerias.ConfigurarLogging(__name__)
 
 
 def crearSubtituloSBV(archivo: str, segundos: int = 2):
@@ -10,9 +14,14 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
     millisegundo = int(1000 * segundos)
     partes = [audio[i:i + millisegundo]
               for i in range(0, len(audio), millisegundo)]
-    folderAudios = "audio_temporal"
+
+    rutaProyecto = archivo.split('/')
+    rutaProyecto.pop()
+    rutaProyecto = "/".join(rutaProyecto)
+    folderAudios = f"{rutaProyecto}/audio_temporal"
 
     if not os.path.isdir(folderAudios):
+        logger.info(f"Creando Folder: {folderAudios}")
         os.mkdir(folderAudios)
 
     textoCompleto = ""
@@ -25,21 +34,31 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
         try:
             texto = extraerAudio(archivoParte)
         except sr.UnknownValueError as e:
-            print("Error:", str(e))
+            logger.error("Error:", str(e))
         else:
-            textoCompleto += f"{trasformarHoras(segundos*(i-1))},{trasformarHoras(segundos*i)}\n"
-            textoCompleto += f"{texto}\n\n"
-            print(f" Procesando: {i}/{len(partes)}", end="\r")
+            if texto is not None:
+                textoCompleto += f"{trasformarHoras(segundos*(i-1))},{trasformarHoras(segundos*i)}\n"
+                textoCompleto += f"{texto}\n\n"
+                print(f" Procesando: {i}/{len(partes)}", end="\r")
     print()
-    EscribirArchivo("subtitulo.txt", textoCompleto)
-    os.rename('subtitulo.txt', 'subtitulo.sbv')
+
+    EscribirArchivo(f"{rutaProyecto}/subtitulo.txt", textoCompleto)
+    os.rename(f"{rutaProyecto}/subtitulo.txt", f"{rutaProyecto}/subtitulo.sbv")
+    logger.info(f"Terminar de crear archivo {rutaProyecto}/subtitulo.sbv")
 
 
 def extraerAudio(archivo: str) -> str:
     r = sr.Recognizer()
     with sr.AudioFile(archivo) as archivoAudio:
         audio = r.record(archivoAudio)
-        texto = r.recognize_google(audio, language="es-ES")
+        try:
+            texto = r.recognize_google(audio, language="es-ES")
+        except sr.exceptions.UnknownValueError:
+            logger.error(f"Error Desconocido Generando de {archivo}")
+            return None
+        except Exception as error:
+            logger.exception(f"Error Main[{error}]")
+            return None
     return texto
 
 

@@ -83,9 +83,10 @@ def main():
             return
         
         if VideoMP4:
+            logger.info(f"Convertir archivo a wav {VideoMP4}")
             audioWav = convertir_wav(VideoMP4)  
         if audioWav:
-            print("Creando archivo subtitulo")
+            logger.info(f"Creando archivo subtitulo {audioWav}")
             crearSubtituloSBV(audioWav)
     elif args.proyectovideo:
         logger.info(f"Nombre del folder {args.proyectovideo}")
