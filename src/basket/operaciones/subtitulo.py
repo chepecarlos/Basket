@@ -18,7 +18,11 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
     rutaProyecto = archivo.split('/')
     rutaProyecto.pop()
     rutaProyecto = "/".join(rutaProyecto)
-    folderAudios = f"{rutaProyecto}/audio_temporal"
+    
+    if rutaProyecto != "":
+        rutaProyecto = f"{rutaProyecto}/"
+
+    folderAudios = f"{rutaProyecto}audio_temporal"
 
     if not os.path.isdir(folderAudios):
         logger.info(f"Creando Folder: {folderAudios}")
@@ -42,9 +46,9 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
                 print(f" Procesando: {i}/{len(partes)}", end="\r")
     print()
 
-    EscribirArchivo(f"{rutaProyecto}/subtitulo.txt", textoCompleto)
-    os.rename(f"{rutaProyecto}/subtitulo.txt", f"{rutaProyecto}/subtitulo.sbv")
-    logger.info(f"Terminar de crear archivo {rutaProyecto}/subtitulo.sbv")
+    EscribirArchivo(f"{rutaProyecto}subtitulo.txt", textoCompleto)
+    os.rename(f"{rutaProyecto}subtitulo.txt", f"{rutaProyecto}subtitulo.sbv")
+    logger.info(f"Terminar de crear archivo {rutaProyecto}subtitulo.sbv")
 
 
 def extraerAudio(archivo: str) -> str:
