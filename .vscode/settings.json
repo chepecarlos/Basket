@@ -1,0 +1,16 @@
+{
+  "workbench.colorCustomizations": {
+    // Color Oscuro
+    "activityBar.background": "#6f003b",
+    "tab.inactiveBackground": "#6f003b",
+    "statusBar.background": "#6f003b",
+    "breadcrumb.background": "#6f003b",
+    "editorGroupHeader.tabsBackground": "#6f003b",
+    // Color Claro
+    "activityBar.activeBackground": "#b65d8c",
+    "tab.activeBackground": "#b65d8c",
+    // Color Mas Oscuro
+    "minimap.background": "#3d0021",
+    "sideBar.background": "#3d0021"
+  }
+}
