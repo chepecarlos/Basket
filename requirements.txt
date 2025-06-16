@@ -8,3 +8,4 @@ bpsrender
 ffmpeg
 pydub
 SpeechRecognition
+transcribe-anything

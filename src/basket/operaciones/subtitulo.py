@@ -1,11 +1,43 @@
 import speech_recognition as sr
+from transcribe_anything.api import transcribe
+
 import os
 from pydub import AudioSegment
 import basket.miLibrerias as miLibrerias
 
-from basket.miLibrerias.FuncionesArchivos import EscribirArchivo
+from basket.miLibrerias.FuncionesArchivos import EscribirArchivo, ObtenerArchivo
 
 logger = miLibrerias.ConfigurarLogging(__name__)
+
+
+def crearSubtituloWhisper(archivo: str)-> str:
+    """_summary_
+
+    Args:
+        archivo (str): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    print(f"Procesando archivo: {archivo}")
+    dataSubtítulos = ObtenerArchivo("data/subtitulos.md")
+    print(f"Subtítulos: {dataSubtítulos}")
+    
+    lenguaje = dataSubtítulos.get("lenguaje", "es")
+    folderSubtitulo = dataSubtítulos.get("folder", "subtitulo")
+    diccionario = dataSubtítulos.get("diccionario", None)
+    if diccionario:
+        diccionario = "important vocab: " + diccionario 
+    argumentos = dataSubtítulos.get("argumentos", None)
+        
+    transcribe(
+        url_or_file=archivo,
+        output_dir=folderSubtitulo,
+        language=lenguaje,
+        # device="cuda",
+        other_args=argumentos,
+        initial_prompt=diccionario,
+    )
 
 
 def crearSubtituloSBV(archivo: str, segundos: int = 2):

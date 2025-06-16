@@ -13,7 +13,7 @@ from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, 
 from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
 from .operaciones.Video import ConvertirVideo
 from .operaciones.convertir import convertir_wav
-from .operaciones.subtitulo import crearSubtituloSBV
+from .operaciones.subtitulo import crearSubtituloSBV, crearSubtituloWhisper
 
 def main():
     logger = miLibrerias.ConfigurarLogging(__name__)
@@ -37,6 +37,8 @@ def main():
     parser.add_argument("--proyectovideo", "-p", help="Crear Folder proyecto de Video")
     parser.add_argument("--proyectoarticulo", "-a", help="Crear articulo base")
 
+    parser.add_argument("--folder", help="Folder a trabajar")
+    
     parser.add_argument("--file", "-f", help="Archivo trabajar")
     parser.add_argument("--depuracion", "-d", help="Activar depuracion", action="store_true")
 
@@ -72,23 +74,30 @@ def main():
         BorrarTemporalesBender("bpsrender")
     elif args.blender_subtitulo:
         if ".blend" in args.blender_subtitulo:
-            VideoMP4 = RenderizarVideo(args.blender_subtitulo)
+            seRenderizo = RenderizarVideo(args.blender_subtitulo)
+            if seRenderizo == False:
+                return
             VideoMP4 = args.blender_subtitulo
             nombreArchivo = args.blender_subtitulo.split(".")
-            VideoMP4 = f"{nombreArchivo[0]}.mp4"
+            nombreArchivo.pop()
+            nombreArchivo = ".".join(nombreArchivo)
+            VideoMP4 = f"{nombreArchivo}.mp4"
         elif ".mp4" in args.blender_subtitulo:
             VideoMP4 = args.blender_subtitulo
         else:
-            print(f"Error en Archivo {args.blender_subtitulo}")
+            logger.warning(f"Error en Archivo {args.blender_subtitulo}")
             return
         
         if VideoMP4:
-            logger.info(f"Convertir archivo a wav {VideoMP4}")
-            audioWav = convertir_wav(VideoMP4)  
-        if audioWav:
-            logger.info(f"Creando archivo subtitulo {audioWav}")
-            crearSubtituloSBV(audioWav)
+            logger.info(f"Empezando a crear subtítulos de {VideoMP4}")
+            crearSubtituloWhisper(VideoMP4)
+            # audioWav = convertir_wav(VideoMP4)  
+        # if audioWav:
+        #     logger.info(f"Creando archivo subtitulo {audioWav}")
+        #     crearSubtituloSBV(audioWav)
     elif args.proyectovideo:
+        if args.folder:
+            CrearFolderVideo(args.proyectovideo, args.folder)
         logger.info(f"Nombre del folder {args.proyectovideo}")
         CrearFolderVideo(args.proyectovideo)
         actualizarIconoFolder(args.file, args.depuracion)
