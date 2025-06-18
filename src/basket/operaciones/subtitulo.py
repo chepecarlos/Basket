@@ -11,13 +11,9 @@ logger = miLibrerias.ConfigurarLogging(__name__)
 
 
 def crearSubtituloWhisper(archivo: str)-> str:
-    """_summary_
-
-    Args:
-        archivo (str): _description_
-
-    Returns:
-        _type_: _description_
+    """
+    
+    https://github.com/zackees/transcribe-anything
     """
     print(f"Procesando archivo: {archivo}")
     dataSubtítulos = ObtenerArchivo("data/subtitulos.md")
