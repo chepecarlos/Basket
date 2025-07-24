@@ -10,22 +10,30 @@ from basket.miLibrerias.FuncionesArchivos import EscribirArchivo, ObtenerArchivo
 logger = miLibrerias.ConfigurarLogging(__name__)
 
 
-def crearSubtituloWhisper(archivo: str)-> str:
+def crearSubtituloWhisper(archivo: str) -> str:
     """
-    
+
     https://github.com/zackees/transcribe-anything
     """
     print(f"Procesando archivo: {archivo}")
     dataSubtítulos = ObtenerArchivo("data/subtitulos.md")
+
+    if dataSubtítulos is None:
+        logger.error("No se pudo obtener el archivo de configuración de subtítulos.")
+        return
+
     print(f"Subtítulos: {dataSubtítulos}")
-    
+
+    nombreArchivo = os.path.splitext(os.path.basename(archivo))[0]
     lenguaje = dataSubtítulos.get("lenguaje", "es")
     folderSubtitulo = dataSubtítulos.get("folder", "subtitulo")
+    folderSubtitulo = f"{folderSubtitulo}_{nombreArchivo}"
+
     diccionario = dataSubtítulos.get("diccionario", None)
     if diccionario:
-        diccionario = "important vocab: " + diccionario 
+        diccionario = "important vocab: " + diccionario
     argumentos = dataSubtítulos.get("argumentos", None)
-        
+
     transcribe(
         url_or_file=archivo,
         output_dir=folderSubtitulo,
@@ -40,13 +48,12 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
 
     audio = AudioSegment.from_file(archivo)
     millisegundo = int(1000 * segundos)
-    partes = [audio[i:i + millisegundo]
-              for i in range(0, len(audio), millisegundo)]
+    partes = [audio[i : i + millisegundo] for i in range(0, len(audio), millisegundo)]
 
-    rutaProyecto = archivo.split('/')
+    rutaProyecto = archivo.split("/")
     rutaProyecto.pop()
     rutaProyecto = "/".join(rutaProyecto)
-    
+
     if rutaProyecto != "":
         rutaProyecto = f"{rutaProyecto}/"
 
@@ -69,7 +76,9 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
             logger.error("Error:", str(e))
         else:
             if texto is not None:
-                textoCompleto += f"{trasformarHoras(segundos*(i-1))},{trasformarHoras(segundos*i)}\n"
+                textoCompleto += (
+                    f"{trasformarHoras(segundos*(i-1))},{trasformarHoras(segundos*i)}\n"
+                )
                 textoCompleto += f"{texto}\n\n"
                 print(f" Procesando: {i}/{len(partes)}", end="\r")
     print()
@@ -100,8 +109,8 @@ def trasformarHoras(segundos: int) -> str:
     segundo: int = 0
     milisegundo: int = 0
 
-    minuto = (segundos - (segundos % 60))/60
-    hora = (minuto - (minuto % 60))/60
+    minuto = (segundos - (segundos % 60)) / 60
+    hora = (minuto - (minuto % 60)) / 60
     minuto = minuto % 60
     segundo = segundos % 60
 
