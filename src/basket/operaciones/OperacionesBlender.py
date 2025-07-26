@@ -27,14 +27,16 @@ def CrearProxy(Directorio):
         miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} creacion de proxy {Tiempo} - {Directorio}")
 
 
-def RenderizarVideo(Archivo):
+def RenderizarVideo(Archivo: str)-> bool:
+    """Renderizar Video con Blender."""
+    # TODO ver si archivo existe 
     if not Archivo.endswith(".blend"):
         Archivo += ".blend"
     miLibrerias.EnviarMensajeTelegram(f"Empezar a *Rendizar Video* {Archivo}")
-    logger.info(f"Empezar a *Rendizar Video* {Archivo}")
+    logger.info(f"Empezar a *Renderizar Video* {Archivo}")
 
     Inicio = time.time()
-    comando = ["bpsrender", Archivo]
+    comando = ["bpsrender", "-vvv", Archivo]
     EstadoPreceso = EmpezarSubProceso(comando)
 
     Final = time.time()
@@ -50,6 +52,30 @@ def RenderizarVideo(Archivo):
 
     return False
 
+def RenderizarAudio(Archivo: str)-> bool:
+    """Renderizar Audio con Blender."""
+    # TODO ver si archivo existe 
+    if not Archivo.endswith(".blend"):
+        Archivo += ".blend"
+    miLibrerias.EnviarMensajeTelegram(f"Empezar a *Rendizar Audio* {Archivo}")
+    logger.info(f"Empezar a *Renderizar Audio* {Archivo}")
+
+    Inicio = time.time()
+    comando = ["bpsrender", "-m", "-vvv", Archivo]
+    EstadoPreceso = EmpezarSubProceso(comando)
+
+    Final = time.time()
+    Tiempo = round(Final - Inicio)
+    Tiempo = str(datetime.timedelta(seconds=Tiempo))
+    if EstadoPreceso == 0:
+        logger.info(f"Finalizo la renderizacion {Tiempo} {Archivo}")
+        miLibrerias.EnviarMensajeTelegram(f"*Finalizo* la renderizacion " + Tiempo + " - " + Archivo)
+        return True
+    else:
+        logger.info(f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
+        miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} la renderizacion {Tiempo} - {Archivo}")
+
+    return False
 
 def BorrarTemporalesBender(Directorio):
     """Borrar Archivos Temprales de Edicion de video en Blender."""
@@ -76,7 +102,7 @@ def remove_suffix(input_string, suffix):
 def SubirVideo(Archivo, Canal=None):
     """Sube video a Youtube."""
     # if ytArchivo)
-    print(f"tipo: {type(Archivo)}")
+    # print(f"tipo: {type(Archivo)}")
     if Archivo.endswith(".blend"):
         Archivo = remove_suffix(Archivo, ".blend")
         # Archivo = Archivo.removesuffix(".blend")

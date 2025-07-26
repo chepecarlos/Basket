@@ -9,7 +9,7 @@ from basket.operaciones.presente import cargarPresente
 from .operaciones import usuario
 from .operaciones.graficaSun import graficaSun
 from .operaciones.IconoFolder import actualizarIconoFolder
-from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, SubirVideo
+from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, RenderizarAudio, SubirVideo
 from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
 from .operaciones.Video import ConvertirVideo
 from .operaciones.convertir import convertir_wav
@@ -74,27 +74,27 @@ def main():
         BorrarTemporalesBender("bpsrender")
     elif args.blender_subtitulo:
         if ".blend" in args.blender_subtitulo:
-            seRenderizo = RenderizarVideo(args.blender_subtitulo)
+            seRenderizo = RenderizarAudio(args.blender_subtitulo)
             if seRenderizo == False:
                 return
+            seRenderizo = True
             VideoMP4 = args.blender_subtitulo
             nombreArchivo = args.blender_subtitulo.split(".")
             nombreArchivo.pop()
             nombreArchivo = ".".join(nombreArchivo)
-            VideoMP4 = f"{nombreArchivo}.mp4"
-        elif ".mp4" in args.blender_subtitulo:
-            VideoMP4 = args.blender_subtitulo
+            VideoFlac = f"bpsrender/{nombreArchivo}_m.flac"
+            
+            
+            print(f"VideoMP4: {VideoFlac}")
+        elif ".flac" in args.blender_subtitulo:
+            VideoFlac = args.blender_subtitulo
         else:
             logger.warning(f"Error en Archivo {args.blender_subtitulo}")
             return
         
-        if VideoMP4:
-            logger.info(f"Empezando a crear subtítulos de {VideoMP4}")
-            crearSubtituloWhisper(VideoMP4)
-            # audioWav = convertir_wav(VideoMP4)  
-        # if audioWav:
-        #     logger.info(f"Creando archivo subtitulo {audioWav}")
-        #     crearSubtituloSBV(audioWav)
+        if VideoFlac:
+            logger.info(f"Empezando a crear subtítulos de {VideoFlac}")
+            crearSubtituloWhisper(VideoFlac)
     elif args.proyectovideo:
         if args.folder:
             CrearFolderVideo(args.proyectovideo, args.folder)

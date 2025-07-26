@@ -28,6 +28,7 @@ def crearSubtituloWhisper(archivo: str) -> str:
     lenguaje = dataSubtítulos.get("lenguaje", "es")
     folderSubtitulo = dataSubtítulos.get("folder", "subtitulo")
     folderSubtitulo = f"{folderSubtitulo}_{nombreArchivo}"
+    folderSubtitulo = folderSubtitulo.rstrip("_m")
 
     diccionario = dataSubtítulos.get("diccionario", None)
     if diccionario:
