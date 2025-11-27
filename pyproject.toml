@@ -1,0 +1,35 @@
+[tool.black]
+line-length = 119
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "basket"
+description = "Heramienta de Automatización de ChepeCarlos"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "ChepeCarlos", email = "chepecarlos@chepecarlos.com" }]
+license = { file = "LICENSE" }
+dynamic = ["version", "dependencies"]
+
+[project.urls]
+Homepage = "https://github.com/chepecarlos/Basket"
+Documentation = "https://github.com/chepecarlos/Basket"
+Source = "https://github.com/chepecarlos/Basket"
+Tracker = "https://github.com/chepecarlos/Basket/issues"
+
+[project.scripts]
+basket = "basket.basket:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests*", "testing*"]
+
+[tool.setuptools.dynamic]
+version = { file = ["VERSION"] }
+dependencies = { file = ["requirements.txt"] }
