@@ -21,7 +21,7 @@ Source = "https://github.com/chepecarlos/Basket"
 Tracker = "https://github.com/chepecarlos/Basket/issues"
 
 [project.scripts]
-basket = "basket.basket:main"
+basket = "basket.main:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

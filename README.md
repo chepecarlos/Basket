@@ -29,3 +29,7 @@ optional arguments:
   --file FILE, -f FILE  Archivo trabajar
 
 ```
+
+# instalar 
+
+sudo apt install xclip

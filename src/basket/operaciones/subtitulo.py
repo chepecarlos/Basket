@@ -28,12 +28,14 @@ def crearSubtituloWhisper(archivo: str) -> str:
     lenguaje = dataSubtítulos.get("lenguaje", "es")
     folderSubtitulo = dataSubtítulos.get("folder", "subtitulo")
     folderSubtitulo = f"{folderSubtitulo}_{nombreArchivo}"
-    folderSubtitulo = folderSubtitulo.rstrip("_m")
+    folderSubtitulo = folderSubtitulo.removesuffix("_m")
 
     diccionario = dataSubtítulos.get("diccionario", None)
     if diccionario:
         diccionario = "important vocab: " + diccionario
     argumentos = dataSubtítulos.get("argumentos", None)
+
+    logger.info(f"Creando subtítulos en {folderSubtitulo} con lenguaje {lenguaje}")
 
     transcribe(
         url_or_file=archivo,
@@ -77,9 +79,7 @@ def crearSubtituloSBV(archivo: str, segundos: int = 2):
             logger.error("Error:", str(e))
         else:
             if texto is not None:
-                textoCompleto += (
-                    f"{trasformarHoras(segundos*(i-1))},{trasformarHoras(segundos*i)}\n"
-                )
+                textoCompleto += f"{trasformarHoras(segundos*(i-1))},{trasformarHoras(segundos*i)}\n"
                 textoCompleto += f"{texto}\n\n"
                 print(f" Procesando: {i}/{len(partes)}", end="\r")
     print()

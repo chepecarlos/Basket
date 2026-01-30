@@ -9,13 +9,21 @@ from basket.operaciones.presente import cargarPresente
 from .operaciones import usuario
 from .operaciones.graficaSun import graficaSun
 from .operaciones.IconoFolder import actualizarIconoFolder
-from .operaciones.OperacionesBlender import BorrarTemporalesBender, CrearProxy, RenderizarVideo, RenderizarAudio, SubirVideo
+from .operaciones.OperacionesBlender import (
+    BorrarTemporalesBender,
+    CrearProxy,
+    RenderizarVideo,
+    RenderizarAudio,
+    SubirVideo,
+)
 from .operaciones.Pantillas import CrearArticulo, CrearFolderVideo
 from .operaciones.Video import ConvertirVideo
 from .operaciones.convertir import convertir_wav
 from .operaciones.subtitulo import crearSubtituloSBV, crearSubtituloWhisper
 
+
 def main():
+
     logger = miLibrerias.ConfigurarLogging(__name__)
 
     parser = argparse.ArgumentParser(description="Heramientas Automatizacion de ALSW")
@@ -26,7 +34,7 @@ def main():
     parser.add_argument("--blender_borrar", "-bb", help="Borrar Temporales de Blender", action="store_true")
     parser.add_argument("--blender_completo", "-bc", help="Renderiza video Blender y sube a youtube")
     parser.add_argument("--blender_subtitulo", "-bs", help="Renderiza video Blender y crea subtitulo.sbv")
-    
+
     parser.add_argument("--canal", "-c", help="Especifica Canal")
 
     parser.add_argument("--video", "-v", help="Convertir video a 60 fps", action="store_true")
@@ -38,7 +46,7 @@ def main():
     parser.add_argument("--proyectoarticulo", "-a", help="Crear articulo base")
 
     parser.add_argument("--folder", help="Folder a trabajar")
-    
+
     parser.add_argument("--file", "-f", help="Archivo trabajar")
     parser.add_argument("--depuracion", "-d", help="Activar depuracion", action="store_true")
 
@@ -47,6 +55,9 @@ def main():
     parser.add_argument("--miembro", "-m", help="Agrega miembros a un archivo de NocheProgramacion")
 
     parser.add_argument("--presente", help="copia a papelera los asistentes del Envivo")
+
+    __version__ = miLibrerias.obtenerVersionPaquete()
+    parser.add_argument("--version", action="version", help="Version del programa", version=f"%(prog)s {__version__}")
 
     args = parser.parse_args()
     if args.icono:
@@ -83,15 +94,15 @@ def main():
             nombreArchivo.pop()
             nombreArchivo = ".".join(nombreArchivo)
             VideoFlac = f"bpsrender/{nombreArchivo}_m.flac"
-            
-            
+
             print(f"VideoMP4: {VideoFlac}")
+            # Agregar opcion de mp4
         elif ".flac" in args.blender_subtitulo:
             VideoFlac = args.blender_subtitulo
         else:
             logger.warning(f"Error en Archivo {args.blender_subtitulo}")
             return
-        
+
         if VideoFlac:
             logger.info(f"Empezando a crear subtítulos de {VideoFlac}")
             crearSubtituloWhisper(VideoFlac)

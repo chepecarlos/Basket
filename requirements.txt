@@ -1,6 +1,4 @@
-python-telegram-bot
 PyYAML
-paho-mqtt
 pandas
 matplotlib
 pyclip
@@ -9,3 +7,10 @@ ffmpeg
 pydub
 SpeechRecognition
 transcribe-anything
+
+# Paquetes Log
+colorlog
+# Paquetes MQTT
+paho-mqtt
+# Paquetes TelegramBot
+python-telegram-bot
