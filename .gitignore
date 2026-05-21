@@ -1,5 +1,7 @@
 ### Python ###
 
+demo/*
+
 # Compiled python modules.
 *.pyc
 

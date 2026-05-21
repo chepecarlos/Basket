@@ -27,9 +27,9 @@ def CrearProxy(Directorio):
         miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} creacion de proxy {Tiempo} - {Directorio}")
 
 
-def RenderizarVideo(Archivo: str)-> bool:
+def RenderizarVideo(Archivo: str) -> bool:
     """Renderizar Video con Blender."""
-    # TODO ver si archivo existe 
+    # TODO ver si archivo existe
     if not Archivo.endswith(".blend"):
         Archivo += ".blend"
     miLibrerias.EnviarMensajeTelegram(f"Empezar a *Rendizar Video* {Archivo}")
@@ -37,6 +37,7 @@ def RenderizarVideo(Archivo: str)-> bool:
 
     Inicio = time.time()
     comando = ["bpsrender", "-vvv", Archivo]
+    logger.info(f"Comando: {' '.join(comando)}")
     EstadoPreceso = EmpezarSubProceso(comando)
 
     Final = time.time()
@@ -52,9 +53,10 @@ def RenderizarVideo(Archivo: str)-> bool:
 
     return False
 
-def RenderizarAudio(Archivo: str)-> bool:
+
+def RenderizarAudio(Archivo: str) -> bool:
     """Renderizar Audio con Blender."""
-    # TODO ver si archivo existe 
+    # TODO ver si archivo existe
     if not Archivo.endswith(".blend"):
         Archivo += ".blend"
     miLibrerias.EnviarMensajeTelegram(f"Empezar a *Rendizar Audio* {Archivo}")
@@ -76,6 +78,7 @@ def RenderizarAudio(Archivo: str)-> bool:
         miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} la renderizacion {Tiempo} - {Archivo}")
 
     return False
+
 
 def BorrarTemporalesBender(Directorio):
     """Borrar Archivos Temprales de Edicion de video en Blender."""
@@ -121,7 +124,7 @@ def SubirVideo(Archivo, Canal=None):
         logger.info(f"Canal: {Canal}")
     else:
         comando = ["tooltube", "--uploader", Archivo]
-        
+
     EstadoPreceso = EmpezarSubProceso(comando)
 
     Final = time.time()
@@ -133,8 +136,6 @@ def SubirVideo(Archivo, Canal=None):
         return True
     else:
         logger.info(f"ERROR {EstadoPreceso} no se puedo subir el video {Tiempo} {Archivo}")
-        miLibrerias.EnviarMensajeTelegram(
-            f"*ERROR* {EstadoPreceso} no se puedo subir el video {Tiempo} - {Archivo}"
-        )
+        miLibrerias.EnviarMensajeTelegram(f"*ERROR* {EstadoPreceso} no se puedo subir el video {Tiempo} - {Archivo}")
 
     return False

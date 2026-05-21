@@ -96,6 +96,9 @@ def main():
             VideoFlac = f"bpsrender/{nombreArchivo}_m.flac"
 
             print(f"VideoMP4: {VideoFlac}")
+            if not os.path.isfile(VideoFlac):
+                logger.error(f"No se generó el archivo de audio: {VideoFlac}")
+                return
             # Agregar opcion de mp4
         elif ".flac" in args.blender_subtitulo:
             VideoFlac = args.blender_subtitulo
