@@ -6,7 +6,7 @@ PACKAGE = src/basket
 
 install:
 	@echo "Instalando Paquete..."
-	pipx install . --force
+	pipx install --editable .
 
 
 # Generar documentación
