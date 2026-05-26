@@ -36,7 +36,7 @@ def RenderizarVideo(Archivo: str) -> bool:
     logger.info(f"Empezar a *Renderizar Video* {Archivo}")
 
     Inicio = time.time()
-    comando = ["bpsrender", "-vvv", Archivo]
+    comando = ["bpsrender", "-w", "4", "--start-delay", "30", "-vvv", Archivo]
     logger.info(f"Comando: {' '.join(comando)}")
     EstadoPreceso = EmpezarSubProceso(comando)
 
