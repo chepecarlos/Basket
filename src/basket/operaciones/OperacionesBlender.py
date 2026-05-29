@@ -36,7 +36,7 @@ def RenderizarVideo(Archivo: str) -> bool:
     logger.info(f"Empezar a *Renderizar Video* {Archivo}")
 
     Inicio = time.time()
-    comando = ["bpsrender", "-w", "4", "--start-delay", "30", "-vvv", Archivo]
+    comando = ["bpsrender", "--ram-limit", "3000", "-w", "4", "--start-delay", "15", "-vvv", Archivo]
     logger.info(f"Comando: {' '.join(comando)}")
     EstadoPreceso = EmpezarSubProceso(comando)
 
@@ -45,7 +45,7 @@ def RenderizarVideo(Archivo: str) -> bool:
     Tiempo = str(datetime.timedelta(seconds=Tiempo))
     if EstadoPreceso == 0:
         logger.info(f"Finalizo la renderizacion {Tiempo} {Archivo}")
-        miLibrerias.EnviarMensajeTelegram(f"*Finalizo* la renderizacion " + Tiempo + " - " + Archivo)
+        miLibrerias.EnviarMensajeTelegram(f"*Finalizo* la renderizacion {Tiempo} - {Archivo}")
         return True
     else:
         logger.info(f"ERROR {EstadoPreceso} la renderizacion {Tiempo} {Archivo} ")
