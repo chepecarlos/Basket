@@ -37,14 +37,22 @@ def crearSubtituloWhisper(archivo: str) -> str:
 
     logger.info(f"Creando subtítulos en {folderSubtitulo} con lenguaje {lenguaje}")
 
-    transcribe(
-        url_or_file=archivo,
-        output_dir=folderSubtitulo,
-        language=lenguaje,
-        # device="cuda",
-        other_args=argumentos,
-        initial_prompt=diccionario,
-    )
+    try:
+        transcribe(
+            url_or_file=archivo,
+            output_dir=folderSubtitulo,
+            language=lenguaje,
+            # device="cuda",
+            other_args=argumentos,
+            initial_prompt=diccionario,
+        )
+    except Exception as error:
+        logger.error(
+            f"Fallo Whisper generando subtítulos de {archivo}: {error}. "
+            "Si acabas de actualizar los drivers gráficos, puede ser un problema de CUDA/GPU "
+            "(prueba `nvidia-smi` y revisa que la versión de PyTorch coincida con el driver)."
+        )
+        return
 
 
 def crearSubtituloSBV(archivo: str, segundos: int = 2):
